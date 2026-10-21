@@ -18,6 +18,8 @@ public class GuerrillaMailPage extends BasePage {
     private final By emailAddress = By.xpath("//*[@id='email-widget']");
     private final By emailBody    = By.xpath("//*[@id='display_email']/div/div[2]/h3");
     private final By scrambleCheckbox = By.xpath("//*[@id='use-alias']");
+    private final By activationLink = By.xpath(
+            "//*[@id='display_email']//a[contains(@href,'Account/Confirm')]");
 
     // Get row containing expected email
     private By emailRow(String subjectKeyword) {
@@ -33,7 +35,7 @@ public class GuerrillaMailPage extends BasePage {
 
     // Get email
     public String getEmail() {
-        ClickButton(scrambleCheckbox);
+        clickButton(scrambleCheckbox);
         wait.until(d -> !find(emailAddress).getText().trim().isEmpty());
         return find(emailAddress).getText().trim();
     }
@@ -51,7 +53,12 @@ public class GuerrillaMailPage extends BasePage {
     // Open email
     public void openEmail(String subjectKeyword) {
         mailWait.until(ExpectedConditions.visibilityOfElementLocated(emailRow(subjectKeyword)));
-        ClickButton(emailRow(subjectKeyword));
+        clickButton(emailRow(subjectKeyword));
+    }
+
+    // Click activation link
+    public void clickActivationLink() {
+        wait.until(ExpectedConditions.elementToBeClickable(activationLink)).click();
     }
 
     // Get email message

@@ -1,7 +1,9 @@
 package pageObjects;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
 public class RegisterPage extends BasePage {
 
@@ -28,7 +30,7 @@ public class RegisterPage extends BasePage {
 
     // Click register button
     public void clickRegisterButton() {
-        ClickButton(registerButton);
+        clickButton(registerButton);
     }
 
     // Register method
@@ -36,5 +38,15 @@ public class RegisterPage extends BasePage {
                          String confirmPassword, String pid) {
         fillRegisterForm(email, password, confirmPassword, pid);
         clickRegisterButton();
+    }
+
+    // Check if at Register page
+    public boolean isAtRegisterPage() {
+        try {
+            wait.until(ExpectedConditions.urlContains("Register"));
+            return true;
+        } catch (TimeoutException e) {
+            return false;
+        }
     }
 }

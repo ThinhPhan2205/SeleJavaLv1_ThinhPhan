@@ -3,7 +3,6 @@ package pageObjects;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -24,10 +23,9 @@ public class BasePage {
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
     }
 
-    // Go to website
-    protected void GoToWebsite(String page_url){
-        driver.manage().window().maximize();
-        driver.get(page_url);
+    // Wait
+    protected WebElement waitForVisible(By locator) {
+        return wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
     }
 
     // Find element
@@ -36,7 +34,7 @@ public class BasePage {
     }
 
     // Click button with JS
-    protected void ClickButton(By locator){
+    protected void clickButton(By locator){
 
         WebElement element = driver.findElement(locator);
 
@@ -44,6 +42,12 @@ public class BasePage {
                 .executeScript("arguments[0].scrollIntoView({block: 'center'});", element);
 
         ((JavascriptExecutor) driver).executeScript("arguments[0].click();", element);
+    }
+
+    // Click on links
+    protected void clickLink(String linkText) {
+        By locator = By.xpath("//a[normalize-space()='" + linkText + "']");
+        wait.until(ExpectedConditions.elementToBeClickable(locator)).click();
     }
 
     // Type in textbox
@@ -54,7 +58,6 @@ public class BasePage {
     }
 
     // Select
-
     protected void selectByText(By locator, String text) {
         new Select(find(locator)).selectByVisibleText(text);
     }

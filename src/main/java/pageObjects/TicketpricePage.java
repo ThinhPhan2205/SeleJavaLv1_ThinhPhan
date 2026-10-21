@@ -5,6 +5,11 @@ import org.openqa.selenium.WebDriver;
 
 public class TicketpricePage extends GeneralPage {
 
+    // Locator
+    private By seattypeRow(int columnIndex) {
+        return By.xpath("(//table//tr[2]/td[" + columnIndex + "]");
+    }
+
     // Get Book ticket link by seat type
     private By bookTicketLink(String seatType) {
         return By.xpath("//td[@class='NoBorder'][normalize-space()='" + seatType + "']"
@@ -18,7 +23,12 @@ public class TicketpricePage extends GeneralPage {
 
     // Function
     public BookticketPage clickBookTicket(String seatType) {
-        ClickButton(bookTicketLink(seatType));
+        clickButton(bookTicketLink(seatType));
         return new BookticketPage(driver);
     }
+
+    public String getSeatTypePrice (String seatType) {
+        return getText(seattypeRow(getColumnIndex(seatType)));
+    }
+
 }

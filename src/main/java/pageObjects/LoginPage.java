@@ -19,7 +19,7 @@ public class LoginPage extends GeneralPage {
     public BasePage login(String username, String password) {
         type(usernameInput, username);
         type(passwordInput, password);
-        ClickButton(loginButton);
+        clickButton(loginButton);
         return new BasePage(driver);
     }
 }

@@ -21,11 +21,11 @@ public class TimetablePage extends GeneralPage {
 
     // Function
     public TicketpricePage clickCheckPrice(String departStation, String arriveStation) {
-        int departCol = getColumnIndex(Constant.DEPART_STATION_HEADER);
-        int arriveCol = getColumnIndex(Constant.ARRIVE_STATION_HEADER);
-        int priceCol  = getColumnIndex(Constant.CHECK_PRICE_HEADER);
+        int departCol = getColumnIndex(Constant.TableHeader.DEPART_STATION.getValue());
+        int arriveCol = getColumnIndex(Constant.TableHeader.ARRIVE_STATION.getValue());
+        int priceCol  = getColumnIndex(Constant.TableHeader.CHECK_PRICE.getValue());
 
-        ClickButton(checkPriceLink(departCol, arriveCol, priceCol, departStation, arriveStation));
+        clickButton(checkPriceLink(departCol, arriveCol, priceCol, departStation, arriveStation));
         return new TicketpricePage(driver);
     }
 }

@@ -6,19 +6,19 @@ import org.openqa.selenium.WebDriver;
 public class BookticketPage extends BasePage {
 
     // ===== Locator =====
-    private final By departDate   = By.xpath("//*[@id='content']/div[1]/form/fieldset/ol/li[1]/select");
-    private final By departFrom   = By.xpath("//*[@id='content']/div[1]/form/fieldset/ol/li[2]/select");
-    private final By arriveAt     = By.xpath("//*[@id='ArriveStation']/select");
-    private final By seatType     = By.xpath("//*[@id='content']/div[1]/form/fieldset/ol/li[4]/select");
-    private final By ticketAmount = By.xpath("//*[@id='content']/div[1]/form/fieldset/ol/li[5]/select");
-    private final By bookButton   = By.xpath("//*[@id='content']/div[1]/form/fieldset/input");
+    private final By departDate   = By.name("Date");
+    private final By departFrom   = By.name("DepartStation");
+    private final By arriveAt     = By.name("ArriveStation");
+    private final By seatType     = By.name("SeatType");
+    private final By ticketAmount = By.name("TicketAmount");
+    private final By bookButton   = By.xpath("//input[@type='submit' and @value='Book ticket']");
 
-    // ===== Constructor =====
+    // Constructor
     public BookticketPage(WebDriver driver) {
         super(driver);
     }
 
-    // ===== Function =====
+    // Function
     public void fillBookTicketForm(String date, String from, String to,
                                    String seat, String amount) {
         selectByText(departDate, date);
@@ -37,7 +37,7 @@ public class BookticketPage extends BasePage {
     }
 
     public BookingSuccessPage clickBookTicketButton() {
-        ClickButton(bookButton);
+        clickButton(bookButton);
         return new BookingSuccessPage(driver);
     }
 
