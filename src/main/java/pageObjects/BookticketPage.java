@@ -5,18 +5,20 @@ import org.openqa.selenium.WebDriver;
 
 public class BookticketPage extends BasePage {
 
-    // ===== Locator =====
+    // Constructor
+    public BookticketPage(WebDriver driver) {
+        super(driver);
+    }
+    GeneralPage generalPage = new GeneralPage(driver);
+
+    // Locator
     private final By departDate   = By.name("Date");
     private final By departFrom   = By.name("DepartStation");
     private final By arriveAt     = By.name("ArriveStation");
     private final By seatType     = By.name("SeatType");
     private final By ticketAmount = By.name("TicketAmount");
     private final By bookButton   = By.xpath("//input[@type='submit' and @value='Book ticket']");
-
-    // Constructor
-    public BookticketPage(WebDriver driver) {
-        super(driver);
-    }
+    final By ticketTableTitle = By.xpath("//div[@id='content']//table//th");
 
     // Function
     public void fillBookTicketForm(String date, String from, String to,
@@ -41,10 +43,16 @@ public class BookticketPage extends BasePage {
         return new BookingSuccessPage(driver);
     }
 
-    // Gộp: điền form rồi bấm đặt vé
-    public BookingSuccessPage bookTicket(String date, String from, String to,
-                                         String seat, String amount) {
+    // Check ticket table title
+    public void checkTicketTableTitle(String title) {
+        String ACTUAL_MESSAGE = generalPage.getMessage(ticketTableTitle);
+        generalPage.checkMessage(ACTUAL_MESSAGE, title);
+    }
+
+    // Fill booking form and click book button
+    public void bookTicket(String date, String from, String to,
+                           String seat, String amount) {
         fillBookTicketForm(date, from, to, seat, amount);
-        return clickBookTicketButton();
+        clickBookTicketButton();
     }
 }

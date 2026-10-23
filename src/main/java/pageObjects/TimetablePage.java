@@ -6,6 +6,13 @@ import org.openqa.selenium.WebDriver;
 
 public class TimetablePage extends GeneralPage {
 
+    // Constructor
+    public TimetablePage(WebDriver driver) {
+        super(driver);
+    }
+
+    // Function
+
     // Get "check price" link of expected routes
     private By checkPriceLink(int departCol, int arriveCol, int priceCol,
                               String departStation, String arriveStation) {
@@ -14,12 +21,7 @@ public class TimetablePage extends GeneralPage {
                 + "/td[" + priceCol + "]//a");
     }
 
-    // Constructor
-    public TimetablePage(WebDriver driver) {
-        super(driver);
-    }
-
-    // Function
+    // Click "check price" link
     public TicketpricePage clickCheckPrice(String departStation, String arriveStation) {
         int departCol = getColumnIndex(Constant.TableHeader.DEPART_STATION.getValue());
         int arriveCol = getColumnIndex(Constant.TableHeader.ARRIVE_STATION.getValue());

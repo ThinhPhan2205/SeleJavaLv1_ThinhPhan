@@ -1,34 +1,49 @@
 package pageObjects;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+
+import java.util.List;
 
 public class TicketpricePage extends GeneralPage {
 
     // Locator
     private By seattypeRow(int columnIndex) {
-        return By.xpath("(//table//tr[2]/td[" + columnIndex + "]");
+        return By.xpath("//*[@id='content']//table//tr[3]/td[" + columnIndex + "]");
     }
 
-    // Get Book ticket link by seat type
-    private By bookTicketLink(String seatType) {
-        return By.xpath("//td[@class='NoBorder'][normalize-space()='" + seatType + "']"
-                + "/following-sibling::td/a");
-    }
-    //*[@id="content"]/table/tbody/tr[2]/td[3]/a
     // Constructor
     public TicketpricePage(WebDriver driver) {
         super(driver);
     }
 
     // Function
+
+    // Get Book ticket link by seat type
+    private By bookTicketLink(String seatType) {
+        return By.xpath("//td[@class='NoBorder'][normalize-space()='" + seatType + "']"
+                + "/following-sibling::td/a");
+    }
+
+    // Click Book ticket link
     public BookticketPage clickBookTicket(String seatType) {
         clickButton(bookTicketLink(seatType));
         return new BookticketPage(driver);
     }
 
+    // Get ticket price of each seat type
     public String getSeatTypePrice (String seatType) {
-        return getText(seattypeRow(getColumnIndex(seatType)));
+        return getText(seattypeRow(getColumnIndexBySeatType(seatType)));
+    }
+
+    // Get column index
+    protected int getColumnIndexBySeatType(String columnName) {
+        By cellLocator = By.xpath(
+                "(//table//*[(self::td) and normalize-space()='" + columnName + "'])[1]");
+        WebElement cell = find(cellLocator);
+        return cell.findElements(By.xpath("preceding-sibling::*")).size();
     }
 
 }

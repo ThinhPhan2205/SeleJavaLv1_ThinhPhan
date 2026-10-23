@@ -1,25 +1,69 @@
 package common;
 
+import org.openqa.selenium.By;
+
 public class Constant {
 
     // WEBSITE URL
     public static final String RAILWAY_URL = "http://saferailway.somee.com/";
 
     // LOGIN ACCOUNT
-    public static final String USERNAME    = "nmpoliek@sharklasers.com";
-    public static final String PASSWORD    = "123123123";
+    public enum AccountToLogin {
+        USERNAME("atapg@sharklasers.com"),
+        PASSWORD("123123123");
+
+        private final String value;
+
+        AccountToLogin(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
 
     // REGISTER ACCOUNT
-    public static final String REGISTER_PASSWORD = "12345678";
-    public static final String REGISTER_PID = "12345678";
+    public enum AccountToRegister {
+        PID("12345678"),
+        PASSWORD("12345678");
+
+        private final String value;
+
+        AccountToRegister(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
+
+    // INVALID INFORMATION
+    public enum InvalidInputs {
+        BLANK_INPUT(""),
+        INACTIVATED_EMAIL("abc@gmail.com"),
+        INVALID_PASSWORD("123"),
+        WRONG_PASSWORD("abcdefghi"),
+        INVALID_PID("12");
+        private final String value;
+
+        InvalidInputs(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
 
     // GUERRILLAMAIL
     public static final String MAILBOX_URL = "https://www.guerrillamail.com/inbox";
     public static final String CONFIRM_EMAIL_SUBJECT = "Please confirm your account";
     public static final String CONFIRM_EMAIL_KEYWORD = "confirm";
+    public static final String RESET_MAIL_KEYWORD = "Please reset your password";
 
     // MENU BAR TAB NAMES
-
     public enum MenuTab {
         REGISTER("Register"),
         LOGIN("Login"),
@@ -44,7 +88,6 @@ public class Constant {
     }
 
     // TABLE HEADERS
-
     public enum TableHeader {
         DEPART_STATION("Depart Station"),
         ARRIVE_STATION("Arrive Station"),
@@ -52,7 +95,8 @@ public class Constant {
         DEPART_DATE("Depart Date"),
         BOOK_TICKET("Book Ticket"),
         TICKET_AMOUNT("Amount"),
-        CHECK_PRICE("Check Price");
+        CHECK_PRICE("Check Price"),
+        OPERATION("Operation");
 
         private final String value;
 
@@ -66,7 +110,6 @@ public class Constant {
     }
 
     // SEAT TYPES
-
     public enum SeatType {
         HARD_SEAT("Hard seat"),
         SOFT_SEAT("Soft seat"),
@@ -107,7 +150,7 @@ public class Constant {
     }
 
     // NOTIFICATION MESSAGE
-    public static final String WELCOME_MESSAGE = "Welcome " + USERNAME;
+    public static final String WELCOME_MESSAGE = "Welcome " + AccountToLogin.USERNAME.getValue();
     public static final String CONFIRMATION_MESSAGE = "Ticket booked successfully!";
     public static final String WRONG_ACCOUNT_LOGIN_MESSAGE =
             "Invalid username or password. Please try again.";
@@ -121,4 +164,7 @@ public class Constant {
             "There're errors in the form. Please correct the errors and try again.";
     public static final String REGISTER_CONFIRM_MESSAGE =
             "Registration Confirmed! You can now log in to the site.";
+    public static final String ERROR_RESET_PASSWORD_MESSAGE =
+            "The new password cannot be the same with the current password";
+
 }

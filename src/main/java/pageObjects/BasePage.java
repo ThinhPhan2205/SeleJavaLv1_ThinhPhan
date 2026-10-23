@@ -1,16 +1,15 @@
 package pageObjects;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.Assert;
 
 import java.time.Duration;
 import java.util.List;
+
+import static java.lang.Thread.sleep;
 
 public class BasePage {
 
@@ -33,8 +32,39 @@ public class BasePage {
         return wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
     }
 
+    // Select
+    protected void selectByText(By locator, String text) {
+        if (locator.equals(By.name("ArriveStation"))) {
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+        wait.ignoring(StaleElementReferenceException.class).until(d -> {
+            Select select = new Select(d.findElement(locator));
+            boolean hasOption = select.getOptions().stream()
+                    .anyMatch(o -> o.getText().trim().equals(text));
+            if (hasOption) {
+                select.selectByVisibleText(text);
+                return true;
+            }
+            return false;
+        });
+    }
+
+    // Get content of element
+    protected String getText(By locator) {
+        return find(locator).getText().trim();
+    }
+
+    // Click on links
+    protected void clickLink(By linkText) {
+        wait.until(ExpectedConditions.elementToBeClickable(linkText)).click();
+    }
+
     // Click button with JS
-    protected void clickButton(By locator){
+    protected void clickButton(By locator) {
 
         WebElement element = driver.findElement(locator);
 
@@ -44,32 +74,12 @@ public class BasePage {
         ((JavascriptExecutor) driver).executeScript("arguments[0].click();", element);
     }
 
-    // Click on links
-    protected void clickLink(String linkText) {
-        By locator = By.xpath("//a[normalize-space()='" + linkText + "']");
-        wait.until(ExpectedConditions.elementToBeClickable(locator)).click();
-    }
 
     // Type in textbox
     protected void type(By locator, String text) {
         WebElement element = find(locator);
         element.clear();
         element.sendKeys(text);
-    }
-
-    // Select
-    protected void selectByText(By locator, String text) {
-        new Select(find(locator)).selectByVisibleText(text);
-    }
-
-    // Get content of element
-    protected String getText(By locator) {
-        return find(locator).getText().trim();
-    }
-
-    // Check displayed content
-    protected boolean isEqual(String actual, String expected) {
-        return actual.trim().equals(expected.trim());
     }
 
     // Get index of header column
@@ -81,5 +91,16 @@ public class BasePage {
             }
         }
         throw new NoSuchElementException("Không tìm thấy cột: " + columnName);
+    }
+
+    // Check displayed content
+    protected boolean isEqual(String actual, String expected) {
+        return actual.trim().equals(expected.trim());
+    }
+
+    // Check message
+    public void checkMessage(String actualMessage, String expectedMessage) {
+        Assert.assertEquals(actualMessage, expectedMessage,
+                "Displayed message is wrong");
     }
 }

@@ -13,11 +13,14 @@ public class RegisterPage extends BasePage {
     private final By confirmPasswordInput = By.id("confirmPassword");
     private final By pidInput             = By.id("pid");
     private final By registerButton       = By.xpath("//*[@id='RegisterForm']/fieldset/p/input");
+    public static final By errorRegisterMessage  = By.xpath("//*[@id='content']/p[2]");
+    public static final By registerConfirmMessage = By.xpath("//*[@id='content']/p");
 
     // Constructor
     public RegisterPage(WebDriver driver) {
         super(driver);
     }
+    GeneralPage generalPage = new GeneralPage(driver);
 
     // Fill registration form
     public void fillRegisterForm(String email, String password,
@@ -40,13 +43,15 @@ public class RegisterPage extends BasePage {
         clickRegisterButton();
     }
 
-    // Check if at Register page
-    public boolean isAtRegisterPage() {
-        try {
-            wait.until(ExpectedConditions.urlContains("Register"));
-            return true;
-        } catch (TimeoutException e) {
-            return false;
-        }
+    // Check error login message
+    public void checkErrorMessage(String expectedMessage){
+        String ACTUAL_MESSAGE = generalPage.getMessage(errorRegisterMessage);
+        generalPage.checkMessage(ACTUAL_MESSAGE, expectedMessage);
+    }
+
+    // Check register confirmation message
+    public void checkConfirmRegisterMessage(String expectedMessage){
+        String ACTUAL_MESSAGE = generalPage.getMessage(registerConfirmMessage);
+        generalPage.checkMessage(ACTUAL_MESSAGE, expectedMessage);
     }
 }
