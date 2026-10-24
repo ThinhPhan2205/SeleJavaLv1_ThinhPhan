@@ -144,7 +144,7 @@ public class GeneralPage extends BasePage {
         mailPage.openEmail(subjectKeyword);
 
         // 7. Click on Activation Link
-        String activationUrl = mailPage.getActivationLink();
+        String activationUrl = mailPage.getLinkInMailBox();
 
         // 8. Redirected to Railway and confirmation message displays
         driver.switchTo().window(railwayTab);
@@ -158,9 +158,6 @@ public class GeneralPage extends BasePage {
     // Go back to Guerrilla site
     public void switchToMailboxPage() {
         driver.switchTo().window(guerrillaTab);
-    }
-    public void switchToRailwayPage() {
-        driver.switchTo().window(railwayTab);
     }
 
 }

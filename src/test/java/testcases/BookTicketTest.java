@@ -102,6 +102,11 @@ public class BookTicketTest extends BaseTest {
     @Test(description = "TC14: User can check price of ticket from Timetable")
     public void tc14_checkPriceOfTicketFromTimetable() {
 
+        // Constructor
+        GeneralPage homePage = new GeneralPage(driver);
+        TicketpricePage ticketpricePage = new TicketpricePage(driver);
+        BookticketPage bookticketPage = new BookticketPage(driver);
+
         // Test Data
         final String departStation = Constant.Station.DANANG.getValue();
         final String arriveStation = Constant.Station.SAIGON.getValue();
@@ -115,11 +120,6 @@ public class BookTicketTest extends BaseTest {
         expectedTicketPrice.put("SB","460000");
         expectedTicketPrice.put("SBC","510000");
 
-        // Constructor
-        GeneralPage homePage = new GeneralPage(driver);
-        TicketpricePage ticketpricePage = new TicketpricePage(driver);
-        BookticketPage bookticketPage = new BookticketPage(driver);
-
         // 1. Login Railway with a valid account
         LoginPage loginPage = homePage.clickOnLoginTab();
         loginPage.login(
@@ -131,8 +131,7 @@ public class BookTicketTest extends BaseTest {
         TimetablePage timetablePage = loginPage.clickOnTimetableTab();
 
         // 3. Click on "check price" link of Da Nang-Sai Gon
-        TicketpricePage ticketPricePage = timetablePage
-                .clickCheckPrice(departStation, arriveStation);
+        timetablePage.clickCheckPrice(departStation, arriveStation);
 
         // Expectation: Price for each seat displays correctly
         bookticketPage.checkTicketTableTitle(priceTableTitle);

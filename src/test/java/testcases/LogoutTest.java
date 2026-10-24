@@ -25,14 +25,14 @@ public class LogoutTest extends BaseTest {
         );
 
         // 3. Click on "FAQ" tab
-        FAQPage  faqPage = loginPage.clickOnFAQTab();
+        FAQPage faqPage = loginPage.clickOnFAQTab();
 
         // 4. Click on "Log out" tab
         LogoutPage logoutPage = generalPage.clickOnLogoutTab();
 
         // 5. Check if Home page displays
         HomePage homePage = new HomePage(driver);
-        Assert.assertTrue(homePage.isAtHomePage(), "Not stay at Home page");
+        Assert.assertTrue(homePage.isAtHomePage(), "Not at Home page");
 
         // 6. Check if "Log out" tab is disappeared
         final String logoutTab = "Log out";

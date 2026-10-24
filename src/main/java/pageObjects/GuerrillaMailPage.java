@@ -23,10 +23,10 @@ public class GuerrillaMailPage extends BasePage {
     private final WebDriverWait mailWait;
     private static final int MAIL_TIMEOUT_SECONDS = 30;
     private final By emailAddress                 = By.id("email-widget");
-    private final By emailConfirmBody                    = By.xpath("//*[@id='display_email']//h3");
+    private final By emailConfirmBody             = By.xpath("//*[@id='display_email']//h3");
     private final By scrambleCheckbox             = By.xpath("//*[@id='use-alias']");
     private final By goBackToInboxButton          = By.id("back_to_inbox_link");
-    private final By activationLink               = By.xpath("//*[@id='display_email']//a[contains(@href,'Account')]");
+    private final By linkInMailBox                = By.xpath("//*[@id='display_email']//a[contains(@href,'Account')]");
     private final By emailResetBody               = By.xpath("//div[@id='display_email']//div[contains(@class,'body')]");
     private static final Pattern tokenPattern     = Pattern.compile("The token is:\\s*([A-Za-z0-9+/=]+)");
 
@@ -43,45 +43,28 @@ public class GuerrillaMailPage extends BasePage {
         return find(emailAddress).getText().trim();
     }
 
-    // Wait for expected email
-    public boolean isEmailDisplayed(String subjectKeyword) {
-        try {
-            mailWait.until(ExpectedConditions.visibilityOfElementLocated(emailRow(subjectKeyword)));
-            return true;
-        } catch (TimeoutException e) {
-            return false;
-        }
-    }
-
     // Open email
     public void openEmail(String subjectKeyword) {
         mailWait.until(ExpectedConditions.visibilityOfElementLocated(emailRow(subjectKeyword)));
         clickButton(emailRow(subjectKeyword));
     }
 
-    // Get activation link
-    public String getActivationLink() {
-
-        return wait.until(ExpectedConditions.visibilityOfElementLocated(activationLink))
+    // Get link in mailbox
+    public String getLinkInMailBox() {
+        return wait.until(ExpectedConditions.visibilityOfElementLocated(linkInMailBox))
                 .getAttribute("href");
     }
 
     // Click link in mailbox
     public void clickLinkInMail() {
-        clickLink(activationLink);
+        clickLink(linkInMailBox);
     }
 
-    // Get email message
-    public String getEmailContent() {
-        return getText(emailConfirmBody);
-    }
-
-    // Click go back to inbox button
+    // Click "go back to inbox" button
     public void goBackToInbox(){
         generalPage.refreshPage();
         clickButton(goBackToInboxButton);
     }
-
 
     // Get Reset Token
     public String getResetToken() {
@@ -92,12 +75,5 @@ public class GuerrillaMailPage extends BasePage {
             return matcher.group(1);
         }
         throw new IllegalStateException("Token not found in email: " + emailText);
-
-    }
-
-    // Combining open email and return message
-    public String openEmailAndGetContent(String subjectKeyword) {
-        openEmail(subjectKeyword);
-        return getEmailContent();
     }
 }

@@ -22,7 +22,7 @@ public class LoginTest extends BaseTest {
                 Constant.AccountToLogin.PASSWORD.getValue()
         );
 
-        // 5. Check Welcome message
+        // Expectation: Welcome user message is displayed
         generalPage.checkWelcomeMessage();
     }
 
@@ -41,7 +41,8 @@ public class LoginTest extends BaseTest {
                 Constant.AccountToLogin.PASSWORD.getValue()
         );
 
-        // 5. Check Error Message
+        // Expectation: User can't log in and message
+        // "There was a problem with your login and/or errors exist in your form. " appears
         loginPage.checkLoginMessage(Constant.INVALID_LOGIN_VALUE_MESSAGE);
     }
 
@@ -60,7 +61,7 @@ public class LoginTest extends BaseTest {
                 Constant.InvalidInputs.INVALID_PASSWORD.getValue()
         );
 
-        // 5. Check Error Message
+        // Expectation: Error message "There was a problem with your login and/or errors exist in your form." is displayed
         loginPage.checkLoginMessage(Constant.INVALID_LOGIN_VALUE_MESSAGE);
 
     }
@@ -78,7 +79,11 @@ public class LoginTest extends BaseTest {
 
         // 3. Enter username and password of account hasn't been activated
         // 4. Click on "Login" button
+        // Expectation: "Invalid username or password. Please try again" is shown
         // 5. Repeat step 3 and 4 three more times
+        // Expectation: User can't login and message
+        // "You have used 4 out of 5 login attempts.
+        // After all 5 have been used, you will be unable to login for 15 minutes." appears
         loginPage.repeatLoginActionAndCheckMessage(loginAttempt);
     }
 
@@ -97,7 +102,7 @@ public class LoginTest extends BaseTest {
                 Constant.AccountToLogin.PASSWORD.getValue()
         );
 
-        // 5. Check Error Message
+        // Expectation: User can't log in and message "Invalid username or password. Please try again." appears
         loginPage.checkLoginMessage(Constant.WRONG_ACCOUNT_LOGIN_MESSAGE);
 
     }

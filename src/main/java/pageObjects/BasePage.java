@@ -22,11 +22,6 @@ public class BasePage {
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
     }
 
-    // Wait
-    protected WebElement waitForVisible(By locator) {
-        return wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
-    }
-
     // Find element
     protected WebElement find(By locator) {
         return wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
@@ -91,11 +86,6 @@ public class BasePage {
             }
         }
         throw new NoSuchElementException("Không tìm thấy cột: " + columnName);
-    }
-
-    // Check displayed content
-    protected boolean isEqual(String actual, String expected) {
-        return actual.trim().equals(expected.trim());
     }
 
     // Check message

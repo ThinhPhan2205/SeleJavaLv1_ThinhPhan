@@ -84,13 +84,13 @@ public class CreateAccountTest extends BaseTest {
         mailPage.openEmail(Constant.CONFIRM_EMAIL_KEYWORD);
 
         // 7. Click on Activation Link
-        String activationUrl = mailPage.getActivationLink();
+        String activationUrl = mailPage.getLinkInMailBox();
 
         // 8. Redirected to Railway and confirmation message displays
         driver.switchTo().window(railwayTab);
         driver.get(activationUrl);
 
-        Assert.assertTrue(homePage.isAtRailwayPage(), "Không ở trang Railway");
+        Assert.assertTrue(homePage.isAtRailwayPage(), "Not at Railway site");
         registerPage.checkConfirmRegisterMessage(Constant.REGISTER_CONFIRM_MESSAGE);
     }
 }

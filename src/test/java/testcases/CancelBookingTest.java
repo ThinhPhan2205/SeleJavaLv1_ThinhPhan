@@ -13,6 +13,9 @@ public class CancelBookingTest extends BaseTest {
     @Test(description = "TC16: User can cancel a ticket")
     public void tc16_cancelTicket() {
 
+        // Constructor
+        BookingSuccessPage bookSuccessPage = new BookingSuccessPage(driver);
+
         // Test Data
         String DATE = LocalDate.now().plusDays(7)
                 .format(DateTimeFormatter.ofPattern("M/d/yyyy"));
@@ -20,9 +23,6 @@ public class CancelBookingTest extends BaseTest {
         String ARRIVE = Constant.Station.HUE.getValue();
         String SEAT   = Constant.SeatType.SOFT_SEAT.getValue();
         String AMOUNT = "2";
-
-        // Constructor
-        BookingSuccessPage bookSuccessPage = new BookingSuccessPage(driver);
 
         // 1. Navigate to Railway
         GeneralPage homePage = new GeneralPage(driver);
@@ -52,7 +52,6 @@ public class CancelBookingTest extends BaseTest {
 
         // 5. Click on "Cancel" button of ticket which user want to cancel.
         // 6. Click on "OK" button on Confirmation message "Are you sure?"
-
         myTicketPage.cancelTicket(DEPART, ARRIVE, SEAT, DATE, AMOUNT);
 
         // Expectation: The canceled ticket is disappeared
