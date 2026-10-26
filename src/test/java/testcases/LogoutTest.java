@@ -11,32 +11,28 @@ public class LogoutTest extends BaseTest {
     public void tc06_LogoutAndRedirectToHomePage() {
 
         // Constructor
-        GeneralPage generalPage = new GeneralPage(driver);
+        BasePage basePage = new BasePage(driver);
+        HomePage homePage = new HomePage(driver);
+        LoginPage  loginPage = new LoginPage(driver);
 
-        // 1. Navigate to Railway
         driver.manage().window().maximize();
         driver.get(Constant.RAILWAY_URL);
 
-        // 2. Login with valid username and password
-        LoginPage loginPage = generalPage.clickOnLoginTab();
+        basePage.clickOnLoginTab();
         loginPage.login(
                 Constant.AccountToLogin.USERNAME.getValue(),
                 Constant.AccountToLogin.PASSWORD.getValue()
         );
 
-        // 3. Click on "FAQ" tab
-        FAQPage faqPage = loginPage.clickOnFAQTab();
+        FAQPage faqPage = basePage.clickOnFAQTab();
 
-        // 4. Click on "Log out" tab
-        LogoutPage logoutPage = generalPage.clickOnLogoutTab();
+        LogoutPage logoutPage = basePage.clickOnLogoutTab();
 
         // 5. Check if Home page displays
-        HomePage homePage = new HomePage(driver);
         Assert.assertTrue(homePage.isAtHomePage(), "Not at Home page");
 
         // 6. Check if "Log out" tab is disappeared
-        final String logoutTab = "Log out";
-        Assert.assertTrue(generalPage.isTabDisappeared(logoutTab),
+        Assert.assertTrue(basePage.isTabDisappeared(Constant.MenuTab.LOGOUT.getValue()),
                 "Tab 'Log out' should disappear but it is still displayed");
 
     }

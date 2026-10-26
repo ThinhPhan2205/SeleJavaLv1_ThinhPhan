@@ -9,7 +9,6 @@ public class BookticketPage extends BasePage {
     public BookticketPage(WebDriver driver) {
         super(driver);
     }
-    GeneralPage generalPage = new GeneralPage(driver);
 
     // Locator
     private final By departDate   = By.name("Date");
@@ -17,7 +16,7 @@ public class BookticketPage extends BasePage {
     private final By arriveAt     = By.name("ArriveStation");
     private final By seatType     = By.name("SeatType");
     private final By ticketAmount = By.name("TicketAmount");
-    private final By bookButton   = By.xpath("//input[@type='submit' and @value='Book ticket']");
+    private final By bookButton   = By.xpath("//input[@typeInTextBox='submit' and @value='Book ticket']");
     final By ticketTableTitle = By.xpath("//div[@id='content']//table//th");
 
     // Function
@@ -38,18 +37,15 @@ public class BookticketPage extends BasePage {
         selectByText(ticketAmount, amount);
     }
 
-    public BookingSuccessPage clickBookTicketButton() {
-        clickButton(bookButton);
-        return new BookingSuccessPage(driver);
+    public void clickBookTicketButton() {
+        clickButtonWithJS(bookButton);
+        new BookingSuccessPage(driver);
     }
 
-    // Check ticket table title
-    public void checkTicketTableTitle(String title) {
-        String ACTUAL_MESSAGE = generalPage.getMessage(ticketTableTitle);
-        generalPage.checkMessage(ACTUAL_MESSAGE, title);
+    public String getTicketTableTitle() {
+        return getTextOfElement(ticketTableTitle);
     }
 
-    // Fill booking form and click book button
     public void bookTicket(String date, String from, String to,
                            String seat, String amount) {
         fillBookTicketForm(date, from, to, seat, amount);

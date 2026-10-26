@@ -22,50 +22,24 @@ public class BookingSuccessPage extends BasePage {
 
     // Get booking successfully message
     public String getSuccessMessage() {
-        return getText(successMessage);
+        return getTextOfElement(successMessage);
     }
 
     // Get information by column header
     public String getTicketInfo(String columnName) {
-        return getText(ticketCell(getColumnIndex(columnName)));
+        return getTextOfElement(ticketCell(getColumnIndex(columnName)));
     }
 
-    //Get ticket ID from URL
     public String getTicketID() {
         return driver.getCurrentUrl().replaceAll(".*id=(\\d+).*", "$1");
     }
 
-    // Check booked ticket information
-    public void verifyBookingSuccess(String departStation, String arriveStation,
-                                     String seatType, String departDate, String ticketAmount) {
-
-        SoftAssert softAssert = new SoftAssert();
-
-        softAssert.assertEquals(getSuccessMessage(),
-                Constant.CONFIRMATION_MESSAGE,
-                "Thông báo đặt vé không đúng");
-
-        softAssert.assertEquals(getTicketInfo(
-                        Constant.TableHeader.DEPART_STATION.getValue()),
-                departStation, "Ga đi không đúng");
-
-        softAssert.assertEquals(getTicketInfo(
-                        Constant.TableHeader.ARRIVE_STATION.getValue()),
-                arriveStation, "Ga đến không đúng");
-
-        softAssert.assertEquals(getTicketInfo(
-                        Constant.TableHeader.SEAT_TYPE.getValue()),
-                seatType, "Loại ghế không đúng");
-
-        softAssert.assertEquals(getTicketInfo(
-                        Constant.TableHeader.DEPART_DATE.getValue()),
-                departDate, "Ngày đi không đúng");
-
-        softAssert.assertEquals(getTicketInfo(
-                        Constant.TableHeader.TICKET_AMOUNT.getValue()),
-                ticketAmount, "Số lượng vé không đúng");
-
-        softAssert.assertAll();
+    public String getTicketSummary() {
+        return String.join(" | ",
+                getTicketInfo(Constant.TableHeader.DEPART_STATION.getValue()),
+                getTicketInfo(Constant.TableHeader.ARRIVE_STATION.getValue()),
+                getTicketInfo(Constant.TableHeader.SEAT_TYPE.getValue()),
+                getTicketInfo(Constant.TableHeader.DEPART_DATE.getValue()),
+                getTicketInfo(Constant.TableHeader.TICKET_AMOUNT.getValue()));
     }
-
 }

@@ -1,6 +1,7 @@
 package testcases;
 
 import common.Constant;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 import pageObjects.*;
@@ -16,9 +17,10 @@ public class BookTicketTest extends BaseTest {
     public void tc12_userCanBookOneTicketAtATime() {
 
         // Constructor
-        GeneralPage generalPage = new GeneralPage(driver);
-        LoginPage loginPage = generalPage.clickOnLoginTab();
-        BookingSuccessPage successPage = new  BookingSuccessPage(driver);
+        BasePage basePage = new BasePage(driver);
+        BookingSuccessPage successPage = new BookingSuccessPage(driver);
+        BookticketPage  bookTicketPage = new BookticketPage(driver);
+        LoginPage loginPage = new LoginPage(driver);
 
         // Test Data
         final String departStation = Constant.Station.NHATRANG.getValue();
@@ -28,40 +30,34 @@ public class BookTicketTest extends BaseTest {
         String departDate = LocalDate.now().plusDays(12)
                 .format(DateTimeFormatter.ofPattern("M/d/yyyy"));
 
-        // 1. Navigate to QA Railway Website
-        // 2. Login with a valid account
+        basePage.clickOnLoginTab();
+
         loginPage.login(
                 Constant.AccountToLogin.USERNAME.getValue(),
                 Constant.AccountToLogin.PASSWORD.getValue()
         );
 
-        // 3. Click on Bookticket tab
-        BookticketPage bookTicketPage = generalPage.clickOnBookTicketTab();
+        basePage.clickOnBookTicketTab();
 
-        // 4. Choose Depart date is next 12 days
-        // 5. Select "Nha Trang" for "Depart from" and "Huế" for "Arrive at"
-        // 6. Select "Soft bed with air conditioner" for "Seat type"
-        // 7. Select "1" for "Ticket amount"
-        // 8. Click on "book ticket"
-        bookTicketPage.bookTicket(
-                departDate,
-                departStation,
-                arriveStation,
-                seatType,
-                ticketAmount
-        );
+        bookTicketPage.bookTicket(departDate, departStation, arriveStation, seatType, ticketAmount);
 
-        // Expectation: "Ticket booked successfully!" is shown with corrected ticket info
-        successPage.verifyBookingSuccess(departStation, arriveStation, seatType, departDate, ticketAmount);
+        Assert.assertEquals(successPage.getSuccessMessage(), Constant.CONFIRMATION_MESSAGE,
+                "Confirmation message is wrong");
+
+        String expectedSummary = String.join(" | ",
+                departStation, arriveStation, seatType, departDate, ticketAmount);
+        Assert.assertEquals(successPage.getTicketSummary(), expectedSummary,
+                "Ticket information does not match with input information");
     }
 
     @Test(description = "TC13: User can book many tickets at a time")
     public void tc13_userCanBookManyTicketsAtATime() {
 
         // Constructor
-        GeneralPage generalPage = new GeneralPage(driver);
-        LoginPage loginPage = generalPage.clickOnLoginTab();
-        BookingSuccessPage successPage = new  BookingSuccessPage(driver);
+        BasePage basePage = new BasePage(driver);
+        BookingSuccessPage successPage = new BookingSuccessPage(driver);
+        BookticketPage  bookTicketPage = new BookticketPage(driver);
+        LoginPage loginPage = new LoginPage(driver);
 
         // Test Data
         final String departStation = Constant.Station.NHATRANG.getValue();
@@ -71,47 +67,39 @@ public class BookTicketTest extends BaseTest {
         String departDate = LocalDate.now().plusDays(25)
                 .format(DateTimeFormatter.ofPattern("M/d/yyyy"));
 
+        basePage.clickOnLoginTab();
 
-        // 1. Navigate to QA Railway Website
-        // 2. Login with a valid account
         loginPage.login(
                 Constant.AccountToLogin.USERNAME.getValue(),
                 Constant.AccountToLogin.PASSWORD.getValue()
         );
 
-        // 3. Click on Bookticket tab
-        BookticketPage bookTicketPage = generalPage.clickOnBookTicketTab();
+        basePage.clickOnBookTicketTab();
 
-        // 4. Choose Depart date is next 25 days
-        // 5. Select "Nha Trang" for "Depart from" and "Sài Gòn" for "Arrive at"
-        // 6. Select "Soft seat with air conditioner" for "Seat type"
-        // 7. Select "5" for "Ticket amount"
-        // 8. Click on "book ticket" button
-        bookTicketPage.bookTicket(
-                departDate,
-                departStation,
-                arriveStation,
-                seatType,
-                ticketAmount
-        );
+        bookTicketPage.bookTicket(departDate, departStation, arriveStation, seatType, ticketAmount);
 
-        // Expectation: "Ticket booked successfully!" is shown with corrected ticket info
-        successPage.verifyBookingSuccess(departStation, arriveStation, seatType, departDate, ticketAmount);
+        Assert.assertEquals(successPage.getSuccessMessage(), Constant.CONFIRMATION_MESSAGE,
+                "Confirmation message is wrong");
+
+        String expectedSummary = String.join(" | ",
+                departStation, arriveStation, seatType, departDate, ticketAmount);
+        Assert.assertEquals(successPage.getTicketSummary(), expectedSummary,
+                "Ticket information does not match with input information");
     }
 
     @Test(description = "TC14: User can check price of ticket from Timetable")
     public void tc14_checkPriceOfTicketFromTimetable() {
 
         // Constructor
-        GeneralPage homePage = new GeneralPage(driver);
+        BasePage basePage = new BasePage(driver);
+        LoginPage loginPage = new LoginPage(driver);
         TicketpricePage ticketpricePage = new TicketpricePage(driver);
-        BookticketPage bookticketPage = new BookticketPage(driver);
+        BookticketPage bookTicketPage = new BookticketPage(driver);
 
         // Test Data
         final String departStation = Constant.Station.DANANG.getValue();
         final String arriveStation = Constant.Station.SAIGON.getValue();
         final String priceTableTitle = "Ticket price from " + departStation + " to " + arriveStation;
-
         Map<String, String> expectedTicketPrice = new HashMap<>();
         expectedTicketPrice.put("HS","310000");
         expectedTicketPrice.put("SS","335000");
@@ -120,27 +108,26 @@ public class BookTicketTest extends BaseTest {
         expectedTicketPrice.put("SB","460000");
         expectedTicketPrice.put("SBC","510000");
 
-        // 1. Login Railway with a valid account
-        LoginPage loginPage = homePage.clickOnLoginTab();
+        basePage.clickOnLoginTab();
+
         loginPage.login(
                 Constant.AccountToLogin.USERNAME.getValue(),
                 Constant.AccountToLogin.PASSWORD.getValue()
         );
 
-        // 2. Click on Timetable tab
-        TimetablePage timetablePage = loginPage.clickOnTimetableTab();
+        TimetablePage timetablePage = basePage.clickOnTimetableTab();
 
-        // 3. Click on "check price" link of Da Nang-Sai Gon
         timetablePage.clickCheckPrice(departStation, arriveStation);
 
-        // Expectation: Price for each seat displays correctly
-        bookticketPage.checkTicketTableTitle(priceTableTitle);
+        Assert.assertEquals(bookTicketPage.getTicketTableTitle(),
+                priceTableTitle,
+                "Price table title is wrong");
 
         SoftAssert softAssert = new  SoftAssert();
         for (Map.Entry<String, String> entry : expectedTicketPrice.entrySet()) {
             softAssert.assertEquals(ticketpricePage.getSeatTypePrice(entry.getKey()),
                     entry.getValue(),
-                    entry.getKey() + " không đúng");
+                    entry.getKey() + " is wrong");
         }
         softAssert.assertAll();
     }
@@ -149,8 +136,12 @@ public class BookTicketTest extends BaseTest {
     public void tc15_bookTicketSuccessfully() {
 
         // Constructor
-        GeneralPage generalPage = new GeneralPage(driver);
-        LoginPage loginPage = generalPage.clickOnLoginTab();
+        BasePage basePage = new BasePage(driver);
+        LoginPage loginPage = new LoginPage(driver);
+        BookingSuccessPage successPage = new BookingSuccessPage(driver);
+        TicketpricePage ticketPricePage = new TicketpricePage(driver);
+        BookticketPage bookTicketPage = new BookticketPage(driver);
+        TimetablePage  timetablePage = basePage.clickOnTimetableTab();
 
         // Test Data
         final String departStation = Constant.Station.QUANGNGAI.getValue();
@@ -160,30 +151,30 @@ public class BookTicketTest extends BaseTest {
         String departDate = LocalDate.now().plusDays(10)
                 .format(DateTimeFormatter.ofPattern("M/d/yyyy"));
 
-        // 1. Login Railway with a valid account
+        basePage.clickOnLoginTab();
+
         loginPage.login(
                 Constant.AccountToLogin.USERNAME.getValue(),
                 Constant.AccountToLogin.PASSWORD.getValue()
         );
 
-        // 2. Click on Timetable tab
-        TimetablePage timetablePage = loginPage.clickOnTimetableTab();
+        basePage.clickOnTimetableTab();
 
-        // 3. Click on "check price" link of Quang Ngai-Hue
-        TicketpricePage ticketPricePage = timetablePage
-                .clickCheckPrice(departStation, arriveStation);
+        timetablePage.clickCheckPrice(departStation, arriveStation);
 
-        // 4. Click on "book ticket" link of "Soft seat"
-        BookticketPage bookTicketPage = ticketPricePage.clickBookTicket(seatType);
+        ticketPricePage.clickBookTicket(seatType);
 
-        // 5. Choose Depart date is next 10 days and Ticket amount is 2
         bookTicketPage.selectDepartDate(departDate);
         bookTicketPage.selectTicketAmount(ticketAmount);
 
-        // 6. Click on "book ticket"
-        BookingSuccessPage successPage = bookTicketPage.clickBookTicketButton();
+        bookTicketPage.clickBookTicketButton();
 
-        // Expectation: "Ticket booked successfully!" is shown with corrected ticket info
-        successPage.verifyBookingSuccess(departStation, arriveStation, seatType, departDate, ticketAmount);
+        Assert.assertEquals(successPage.getSuccessMessage(), Constant.CONFIRMATION_MESSAGE,
+                "Confirmation message is wrong");
+
+        String expectedSummary = String.join(" | ",
+                departStation, arriveStation, seatType, departDate, ticketAmount);
+        Assert.assertEquals(successPage.getTicketSummary(), expectedSummary,
+                "Ticket information does not match with input information");
     }
 }

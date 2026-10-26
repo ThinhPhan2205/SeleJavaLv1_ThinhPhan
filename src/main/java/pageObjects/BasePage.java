@@ -1,5 +1,6 @@
 package pageObjects;
 
+import common.Constant;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
@@ -17,24 +18,30 @@ public class BasePage {
     protected WebDriverWait wait;
 
     // Constructor
+    protected String guerrillaTab;
+    final By welcomeMessage = By.xpath("//div[@class='account']/strong");
     public BasePage(WebDriver driver) {
         this.driver = driver;
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
     }
+    private By menuTab(String tabName) {
+        String lower = tabName.trim().toLowerCase();
+        return By.xpath("//*[@id='menu']//a[translate(normalize-space(.), "
+                + "'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')='" + lower + "']");
+    }
 
-    // Find element
-    protected WebElement find(By locator) {
+    public String getInputValue(By locator) {
+        return driver.findElement(locator).getAttribute("value");
+    }
+
+    protected WebElement findElement(By locator) {
         return wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
     }
 
-    // Select
     protected void selectByText(By locator, String text) {
         if (locator.equals(By.name("ArriveStation"))) {
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(2));
+            wait.until(ExpectedConditions.elementToBeClickable(locator));
         }
         wait.ignoring(StaleElementReferenceException.class).until(d -> {
             Select select = new Select(d.findElement(locator));
@@ -48,18 +55,15 @@ public class BasePage {
         });
     }
 
-    // Get content of element
-    protected String getText(By locator) {
-        return find(locator).getText().trim();
+    protected String getTextOfElement(By locator) {
+        return findElement(locator).getText().trim();
     }
 
-    // Click on links
     protected void clickLink(By linkText) {
         wait.until(ExpectedConditions.elementToBeClickable(linkText)).click();
     }
 
-    // Click button with JS
-    protected void clickButton(By locator) {
+    protected void clickButtonWithJS(By locator) {
 
         WebElement element = driver.findElement(locator);
 
@@ -69,15 +73,12 @@ public class BasePage {
         ((JavascriptExecutor) driver).executeScript("arguments[0].click();", element);
     }
 
-
-    // Type in textbox
-    protected void type(By locator, String text) {
-        WebElement element = find(locator);
+    protected void typeInTextBox(By locator, String text) {
+        WebElement element = findElement(locator);
         element.clear();
         element.sendKeys(text);
     }
 
-    // Get index of header column
     protected int getColumnIndex(String columnName) {
         List<WebElement> headers = driver.findElements(By.xpath("(//table//tr[th])[1]/th"));
         for (int i = 0; i < headers.size(); i++) {
@@ -85,12 +86,76 @@ public class BasePage {
                 return i + 1;
             }
         }
-        throw new NoSuchElementException("Không tìm thấy cột: " + columnName);
+        throw new NoSuchElementException("Can not found column: " + columnName);
     }
 
-    // Check message
-    public void checkMessage(String actualMessage, String expectedMessage) {
-        Assert.assertEquals(actualMessage, expectedMessage,
-                "Displayed message is wrong");
+    private void clickOnTab(String tabName) {
+        clickButtonWithJS(menuTab(tabName));
+    }
+
+    public LoginPage clickOnLoginTab() {
+        clickOnTab(Constant.MenuTab.LOGIN.getValue());
+        return new LoginPage(driver);
+    }
+
+    public RegisterPage clickOnRegisterTab() {
+        clickOnTab(Constant.MenuTab.REGISTER.getValue());
+        return new RegisterPage(driver);
+    }
+
+    public MyticketPage clickOnMyticketTab() {
+        clickOnTab(Constant.MenuTab.MY_TICKET.getValue());
+        return new MyticketPage(driver);
+    }
+
+    public TimetablePage clickOnTimetableTab() {
+        clickOnTab(Constant.MenuTab.TIMETABLE.getValue());
+        return new TimetablePage(driver);
+    }
+
+    public BookticketPage clickOnBookTicketTab() {
+        clickOnTab(Constant.MenuTab.BOOK_TICKET.getValue());
+        return new BookticketPage(driver);
+    }
+
+    public LogoutPage clickOnLogoutTab() {
+        clickOnTab(Constant.MenuTab.LOGOUT.getValue());
+        return new LogoutPage(driver);
+    }
+
+    public FAQPage clickOnFAQTab() {
+        clickOnTab(Constant.MenuTab.FAQ.getValue());
+        return new FAQPage(driver);
+    }
+
+    public void refreshPage() {
+        driver.navigate().refresh();
+    }
+
+    public String getWelcomeMessage() {
+        return getTextOfElement(welcomeMessage);
+    }
+
+    public boolean isTabDisappeared(String tabName) {
+        By tabXPath = By.xpath("//div[@id='menu']//a[span='" + tabName + "']");
+        try {
+            return wait.until(ExpectedConditions.invisibilityOfElementLocated(tabXPath));
+        } catch (TimeoutException e) {
+            return false;
+        }
+    }
+
+    public boolean isAtRailwayPage() {
+        try {
+            wait.until(driver -> driver.getCurrentUrl().toLowerCase()
+                    .contains("railway".toLowerCase()));
+            return true;
+        } catch (TimeoutException e) {
+            return false;
+        }
+    }
+
+    public void switchToMailboxPage() {
+        driver.switchTo().window(guerrillaTab);
     }
 }

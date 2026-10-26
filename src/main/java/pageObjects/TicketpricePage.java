@@ -1,13 +1,10 @@
 package pageObjects;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-import java.util.List;
-
-public class TicketpricePage extends GeneralPage {
+public class TicketpricePage extends BasePage {
 
     // Locator
     private By seattypeRow(int columnIndex) {
@@ -21,7 +18,7 @@ public class TicketpricePage extends GeneralPage {
 
     // Function
 
-    // Get Book ticket link by seat type
+    // Get Book ticket link by seat typeInTextBox
     private By bookTicketLink(String seatType) {
         return By.xpath("//td[@class='NoBorder'][normalize-space()='" + seatType + "']"
                 + "/following-sibling::td/a");
@@ -29,20 +26,20 @@ public class TicketpricePage extends GeneralPage {
 
     // Click Book ticket link
     public BookticketPage clickBookTicket(String seatType) {
-        clickButton(bookTicketLink(seatType));
+        clickButtonWithJS(bookTicketLink(seatType));
         return new BookticketPage(driver);
     }
 
-    // Get ticket price of each seat type
+    // Get ticket price of each seat typeInTextBox
     public String getSeatTypePrice (String seatType) {
-        return getText(seattypeRow(getColumnIndexBySeatType(seatType)));
+        return getTextOfElement(seattypeRow(getColumnIndexBySeatType(seatType)));
     }
 
     // Get column index
     protected int getColumnIndexBySeatType(String columnName) {
         By cellLocator = By.xpath(
                 "(//table//*[(self::td) and normalize-space()='" + columnName + "'])[1]");
-        WebElement cell = find(cellLocator);
+        WebElement cell = findElement(cellLocator);
         return cell.findElements(By.xpath("preceding-sibling::*")).size();
     }
 

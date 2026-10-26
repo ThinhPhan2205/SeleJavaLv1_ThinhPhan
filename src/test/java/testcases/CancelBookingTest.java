@@ -1,6 +1,7 @@
 package testcases;
 
 import common.Constant;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 import pageObjects.*;
 
@@ -14,47 +15,49 @@ public class CancelBookingTest extends BaseTest {
     public void tc16_cancelTicket() {
 
         // Constructor
+        BasePage basePage = new BasePage(driver);
+        LoginPage  loginPage = new LoginPage(driver);
+        BookticketPage  bookTicketPage = new BookticketPage(driver);
+        MyticketPage   myTicketPage = new MyticketPage(driver);
         BookingSuccessPage bookSuccessPage = new BookingSuccessPage(driver);
 
         // Test Data
-        String DATE = LocalDate.now().plusDays(7)
+        String departDate = LocalDate.now().plusDays(7)
                 .format(DateTimeFormatter.ofPattern("M/d/yyyy"));
-        String DEPART = Constant.Station.DANANG.getValue();
-        String ARRIVE = Constant.Station.HUE.getValue();
-        String SEAT   = Constant.SeatType.SOFT_SEAT.getValue();
-        String AMOUNT = "2";
+        String departStation = Constant.Station.DANANG.getValue();
+        String arriveStation = Constant.Station.HUE.getValue();
+        String seatType = Constant.SeatType.SOFT_SEAT.getValue();
+        String ticketAmount = "2";
 
-        // 1. Navigate to Railway
-        GeneralPage homePage = new GeneralPage(driver);
+        basePage.clickOnLoginTab();
 
-        // 2. Login with a valid account
-        LoginPage loginPage = homePage.clickOnLoginTab();
         loginPage.login(
                 Constant.AccountToLogin.USERNAME.getValue(),
                 Constant.AccountToLogin.PASSWORD.getValue()
         );
 
-        // 3. Book a ticket
-        BookticketPage bookTicketPage = homePage.clickOnBookTicketTab();
-        bookTicketPage.bookTicket(DATE, DEPART, ARRIVE, SEAT, AMOUNT);
+        basePage.clickOnBookTicketTab();
 
-        // Get ticket ID
+        bookTicketPage.bookTicket(departDate, departStation, arriveStation, seatType, ticketAmount);
+
         String ticketID = bookSuccessPage.getTicketID();
 
-        // Check booked ticket information
-        bookSuccessPage.verifyBookingSuccess(DEPART, ARRIVE, SEAT, DATE, AMOUNT);
+        Assert.assertEquals(bookSuccessPage.getSuccessMessage(), Constant.CONFIRMATION_MESSAGE,
+                "Confirmation message is wrong");
 
-        // 4. Click on "My ticket" tab
-        MyticketPage myTicketPage = homePage.clickOnMyticketTab();
+        String expectedSummary = String.join(" | ",
+                departStation, arriveStation, seatType, departDate, ticketAmount);
+        Assert.assertEquals(bookSuccessPage.getTicketSummary(), expectedSummary,
+                "Ticket information does not match with input information");
 
-        // Check if booked ticket is added to My ticket table
-        myTicketPage.isTicketDisplayed(ticketID);
+        basePage.clickOnMyticketTab();
 
-        // 5. Click on "Cancel" button of ticket which user want to cancel.
-        // 6. Click on "OK" button on Confirmation message "Are you sure?"
-        myTicketPage.cancelTicket(DEPART, ARRIVE, SEAT, DATE, AMOUNT);
+        Assert.assertTrue(myTicketPage.isTicketDisplayed(ticketID),
+                "Ticket " + ticketID + " does not display in My ticket table");
 
-        // Expectation: The canceled ticket is disappeared
-        myTicketPage.checkIsTicketDeleted();
+        myTicketPage.cancelTicket(departStation, arriveStation, seatType, departDate, ticketAmount);
+
+        Assert.assertTrue(myTicketPage.isTicketDeleted(ticketID),
+                "Ticket " + ticketID + " still displays in My ticket table after cancellation");
     }
 }

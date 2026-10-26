@@ -1,7 +1,6 @@
 package pageObjects;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -17,7 +16,6 @@ public class GuerrillaMailPage extends BasePage {
         super(driver);
         this.mailWait = new WebDriverWait(driver, Duration.ofSeconds(MAIL_TIMEOUT_SECONDS));
     }
-    GeneralPage generalPage = new GeneralPage(driver);
 
     // Locator
     private final WebDriverWait mailWait;
@@ -38,15 +36,15 @@ public class GuerrillaMailPage extends BasePage {
 
     // Get email
     public String getEmail() {
-        clickButton(scrambleCheckbox);
-        wait.until(d -> !find(emailAddress).getText().trim().isEmpty());
-        return find(emailAddress).getText().trim();
+        clickButtonWithJS(scrambleCheckbox);
+        wait.until(d -> !findElement(emailAddress).getText().trim().isEmpty());
+        return findElement(emailAddress).getText().trim();
     }
 
     // Open email
     public void openEmail(String subjectKeyword) {
         mailWait.until(ExpectedConditions.visibilityOfElementLocated(emailRow(subjectKeyword)));
-        clickButton(emailRow(subjectKeyword));
+        clickButtonWithJS(emailRow(subjectKeyword));
     }
 
     // Get link in mailbox
@@ -62,13 +60,13 @@ public class GuerrillaMailPage extends BasePage {
 
     // Click "go back to inbox" button
     public void goBackToInbox(){
-        generalPage.refreshPage();
-        clickButton(goBackToInboxButton);
+        refreshPage();
+        clickButtonWithJS(goBackToInboxButton);
     }
 
     // Get Reset Token
     public String getResetToken() {
-        String emailText = generalPage.getMessage(emailResetBody);
+        String emailText = getTextOfElement(emailResetBody);
 
         Matcher matcher = tokenPattern.matcher(emailText);
         if (matcher.find()) {

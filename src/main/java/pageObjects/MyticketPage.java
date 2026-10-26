@@ -3,22 +3,19 @@ package pageObjects;
 import common.Constant;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 
-public class MyticketPage extends GeneralPage {
+public class MyticketPage extends BasePage {
 
     // Locator
     private By cancelButton(String ticketId) {
         return By.xpath("//input[@value='Cancel' and @onclick='DeleteTicket(" + ticketId + ");']");
     }
-    private String deletedTicketId;
 
     // Constructor
     public MyticketPage(WebDriver driver) {
         super(driver);
     }
 
-    // Check is ticket displayed in My ticket table
     public boolean isTicketDisplayed(String ticketId) {
         return !driver.findElements(cancelButton(ticketId)).isEmpty();
     }
@@ -29,7 +26,6 @@ public class MyticketPage extends GeneralPage {
                 + "']/preceding-sibling::th)+1][normalize-space()='" + value + "']";
     }
 
-    // Cancel ticket by ID
     public void cancelTicket(String depart, String arrive, String seat,
                              String date, String amount) {
 
@@ -42,17 +38,15 @@ public class MyticketPage extends GeneralPage {
                         + cellCondition(Constant.TableHeader.TICKET_AMOUNT, amount)
                         + "]//input[@value='Cancel']");
 
-        deletedTicketId = find(cancelLocator).getAttribute("onclick").replaceAll("\\D+", "");
+        findElement(cancelLocator).getAttribute("onclick").replaceAll("\\D+", "");
 
-        clickButton(cancelLocator);
+        clickButtonWithJS(cancelLocator);
 
         driver.switchTo().alert().accept();
     }
 
-    public void checkIsTicketDeleted() {
-        driver.findElements(By.xpath(
-                "//input[@value='Cancel' and contains(@onclick,'" + deletedTicketId + "')]"
-        ));
+    public boolean isTicketDeleted(String ticketId) {
+        return driver.findElements(cancelButton(ticketId)).isEmpty();
     }
 
 }

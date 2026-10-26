@@ -1,4 +1,4 @@
-package common;
+package dataObjects;
 
 public class Account {
     private final String email;

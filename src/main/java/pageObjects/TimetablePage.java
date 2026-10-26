@@ -4,7 +4,7 @@ import common.Constant;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
-public class TimetablePage extends GeneralPage {
+public class TimetablePage extends BasePage {
 
     // Constructor
     public TimetablePage(WebDriver driver) {
@@ -27,7 +27,7 @@ public class TimetablePage extends GeneralPage {
         int arriveCol = getColumnIndex(Constant.TableHeader.ARRIVE_STATION.getValue());
         int priceCol  = getColumnIndex(Constant.TableHeader.CHECK_PRICE.getValue());
 
-        clickButton(checkPriceLink(departCol, arriveCol, priceCol, departStation, arriveStation));
+        clickButtonWithJS(checkPriceLink(departCol, arriveCol, priceCol, departStation, arriveStation));
         return new TicketpricePage(driver);
     }
 }
