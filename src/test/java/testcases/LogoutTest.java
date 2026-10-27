@@ -19,6 +19,7 @@ public class LogoutTest extends BaseTest {
         driver.get(Constant.RAILWAY_URL);
 
         basePage.clickOnLoginTab();
+
         loginPage.login(
                 Constant.AccountToLogin.USERNAME.getValue(),
                 Constant.AccountToLogin.PASSWORD.getValue()

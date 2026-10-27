@@ -27,7 +27,7 @@ public class CancelBookingTest extends BaseTest {
         String departStation = Constant.Station.DANANG.getValue();
         String arriveStation = Constant.Station.HUE.getValue();
         String seatType = Constant.SeatType.SOFT_SEAT.getValue();
-        String ticketAmount = "2";
+        String ticketAmount = "1";
 
         basePage.clickOnLoginTab();
 

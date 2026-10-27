@@ -1,5 +1,8 @@
 package pageObjects;
 
+import common.Constant;
+import io.qameta.allure.Allure;
+import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -28,49 +31,58 @@ public class GuerrillaMailPage extends BasePage {
     private final By emailResetBody               = By.xpath("//div[@id='display_email']//div[contains(@class,'body')]");
     private static final Pattern tokenPattern     = Pattern.compile("The token is:\\s*([A-Za-z0-9+/=]+)");
 
+    @Step("Navigate to Guerrilla Mail")
+    public String goToGuerrillaSite() {
+        driver.get(Constant.MAILBOX_URL);
+        return driver.getWindowHandle();
+    }
+
     // Get row containing expected email
     private By emailRow(String subjectKeyword) {
         return By.xpath("//tbody[@id='email_list']//tr[contains(normalize-space(.), '"
                 + subjectKeyword + "')]");
     }
 
-    // Get email
+    @Step("Get a clone email")
     public String getEmail() {
         clickButtonWithJS(scrambleCheckbox);
         wait.until(d -> !findElement(emailAddress).getText().trim().isEmpty());
-        return findElement(emailAddress).getText().trim();
+        String email = findElement(emailAddress).getText().trim();
+        Allure.getLifecycle().updateStep(step -> step.setName("Get clone email: " + email));
+        return email;
     }
 
-    // Open email
+    @Step("Open email containing keyword: {subjectKeyword}")
     public void openEmail(String subjectKeyword) {
         mailWait.until(ExpectedConditions.visibilityOfElementLocated(emailRow(subjectKeyword)));
         clickButtonWithJS(emailRow(subjectKeyword));
     }
 
-    // Get link in mailbox
+    @Step("Get link attached in mail")
     public String getLinkInMailBox() {
         return wait.until(ExpectedConditions.visibilityOfElementLocated(linkInMailBox))
                 .getAttribute("href");
     }
 
-    // Click link in mailbox
+    @Step("Click link in mail")
     public void clickLinkInMail() {
         clickLink(linkInMailBox);
     }
 
-    // Click "go back to inbox" button
+    @Step("Go back to mailbox")
     public void goBackToInbox(){
         refreshPage();
         clickButtonWithJS(goBackToInboxButton);
     }
 
-    // Get Reset Token
+    @Step("Get reset token")
     public String getResetToken() {
         String emailText = getTextOfElement(emailResetBody);
-
         Matcher matcher = tokenPattern.matcher(emailText);
         if (matcher.find()) {
-            return matcher.group(1);
+            String url = matcher.group(1);
+            Allure.getLifecycle().updateStep(step -> step.setName("Get reset token: " + url));
+            return url;
         }
         throw new IllegalStateException("Token not found in email: " + emailText);
     }

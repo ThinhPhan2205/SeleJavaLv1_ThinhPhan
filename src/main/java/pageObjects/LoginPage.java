@@ -1,6 +1,8 @@
 package pageObjects;
 
 import common.Constant;
+import io.qameta.allure.Allure;
+import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
@@ -20,7 +22,7 @@ public class LoginPage extends BasePage {
 
     // Function
 
-    // Login to Railway
+    @Step("Log in with username: {username} and password: {password} ")
     public void login(String username, String password) {
         typeInTextBox(usernameInput, username);
         typeInTextBox(passwordInput, password);
@@ -28,21 +30,22 @@ public class LoginPage extends BasePage {
         new BasePage(driver);
     }
 
-    public void repeatLoginAction(int loginAttempt) {
+    @Step("Repeat logging in several times with username: {username} and password: {password} ")
+    public void repeatLoginAction(int loginAttempt, String username, String password) {
         for (int i = 0; i < loginAttempt; i++) {
-            login(Constant.AccountToLogin.USERNAME.getValue(),
-                    Constant.InvalidInputs.WRONG_PASSWORD.getValue()
-            );
+            login(username, password);
         }
     }
 
-    // Click on Forget Password link
+    @Step("Click on Forgot Password link")
     public void clickResetPasswordLink(){
         clickLink(resetPasswordLink);
     }
 
-    // Check login message
+    @Step("Get login message")
     public String getLoginMessage(){
-        return getTextOfElement(loginMessage);
+        String message = getTextOfElement(loginMessage);
+        Allure.getLifecycle().updateStep(step -> step.setName("Get login message: " + message));
+        return message;
     }
 }

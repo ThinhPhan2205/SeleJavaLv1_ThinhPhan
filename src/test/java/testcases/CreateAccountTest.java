@@ -26,8 +26,6 @@ public class CreateAccountTest extends BaseTest {
         Assert.assertEquals(registerPage.getErrorRegisterMessage(),
                 Constant.INUSE_EMAIL_WARNING,
                 "Error register message is wrong");
-
-
     }
 
     @Test(description = "TC08: User can't create account while password and PID fields are empty")
@@ -57,8 +55,7 @@ public class CreateAccountTest extends BaseTest {
         RegisterPage registerPage = new RegisterPage(driver);
 
         // Navigate to Guerrilla Mail
-        driver.get(Constant.MAILBOX_URL);
-        String guerrillaTab = driver.getWindowHandle();
+        String guerrillaTab = mailPage.goToGuerrillaSite();
 
         // Get a free email
         String email = mailPage.getEmail();
@@ -66,6 +63,7 @@ public class CreateAccountTest extends BaseTest {
         driver.switchTo().newWindow(WindowType.TAB);
         driver.get(Constant.RAILWAY_URL);
         String railwayTab = driver.getWindowHandle();
+
         basePage.clickOnRegisterTab();
 
         registerPage.register(email,

@@ -11,13 +11,11 @@ import pageObjects.*;
 
 public class LoginTest extends BaseTest {
 
-    private WebDriver driver;
     private BasePage basePage;
     private LoginPage loginPage;
 
     @BeforeMethod
-    public void setUp() {
-        driver = new ChromeDriver();
+    public void initPages() {
         basePage = new BasePage(driver);
         loginPage = new LoginPage(driver);
     }
@@ -71,7 +69,7 @@ public class LoginTest extends BaseTest {
     public void tc04_loginWithWrongPasswordManyTimes() {
 
         // Test Data
-        final int loginAttempt = 4;
+        final int loginAttempt = 3;
 
         basePage.clickOnLoginTab();
 
@@ -85,7 +83,10 @@ public class LoginTest extends BaseTest {
                 "Error login message is wrong");
 
         // 5. Repeat step 3 and 4 three more times
-        loginPage.repeatLoginAction(loginAttempt);
+        loginPage.repeatLoginAction(loginAttempt,
+                Constant.AccountToLogin.USERNAME.getValue(),
+                Constant.InvalidInputs.WRONG_PASSWORD.getValue()
+        );
 
         Assert.assertEquals(loginPage.getLoginMessage(),
                 Constant.DISABLED_LOGIN_WARNING,

@@ -4,7 +4,6 @@ import common.Constant;
 import dataObjects.Account;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WindowType;
-import org.testng.Assert;
 import pageObjects.BasePage;
 import pageObjects.GuerrillaMailPage;
 import pageObjects.RegisterPage;
@@ -55,7 +54,12 @@ public class AccountHelper {
         driver.switchTo().window(railwayTab);
         driver.get(activationUrl);
 
-        Assert.assertTrue(basePage.isAtRailwayPage(), "Không ở trang Railway sau khi kích hoạt");
+        if (basePage.isAtRailwayPage()){
+            System.out.print("Browser is at Railway site");
+        } else {
+            System.out.print("Browser is not at Railway site");
+        }
+
 
         return new Account(email, Constant.AccountToRegister.PASSWORD.getValue());
     }

@@ -1,11 +1,12 @@
 package pageObjects;
 
 import common.Constant;
+import io.qameta.allure.Allure;
+import io.qameta.allure.Step;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.testng.Assert;
 
 import java.time.Duration;
 import java.util.List;
@@ -93,36 +94,43 @@ public class BasePage {
         clickButtonWithJS(menuTab(tabName));
     }
 
+    @Step("Click on Login tab")
     public LoginPage clickOnLoginTab() {
         clickOnTab(Constant.MenuTab.LOGIN.getValue());
         return new LoginPage(driver);
     }
 
+    @Step("Click on Register tab")
     public RegisterPage clickOnRegisterTab() {
         clickOnTab(Constant.MenuTab.REGISTER.getValue());
         return new RegisterPage(driver);
     }
 
+    @Step("Click on My ticket tab")
     public MyticketPage clickOnMyticketTab() {
         clickOnTab(Constant.MenuTab.MY_TICKET.getValue());
         return new MyticketPage(driver);
     }
 
+    @Step("Click on Timetable tab")
     public TimetablePage clickOnTimetableTab() {
         clickOnTab(Constant.MenuTab.TIMETABLE.getValue());
         return new TimetablePage(driver);
     }
 
+    @Step("Click on Book ticket tab")
     public BookticketPage clickOnBookTicketTab() {
         clickOnTab(Constant.MenuTab.BOOK_TICKET.getValue());
         return new BookticketPage(driver);
     }
 
+    @Step("Click on Log out tab")
     public LogoutPage clickOnLogoutTab() {
         clickOnTab(Constant.MenuTab.LOGOUT.getValue());
         return new LogoutPage(driver);
     }
 
+    @Step("Click on FAQ tab")
     public FAQPage clickOnFAQTab() {
         clickOnTab(Constant.MenuTab.FAQ.getValue());
         return new FAQPage(driver);
@@ -132,10 +140,14 @@ public class BasePage {
         driver.navigate().refresh();
     }
 
+    @Step("Get welcome message")
     public String getWelcomeMessage() {
-        return getTextOfElement(welcomeMessage);
+        String welcomeMess = getTextOfElement(welcomeMessage);
+        Allure.getLifecycle().updateStep(step -> step.setName("Get welcome message: " + welcomeMess));
+        return welcomeMess;
     }
 
+    @Step("Check {tabName} tab disappeared from menu bar")
     public boolean isTabDisappeared(String tabName) {
         By tabXPath = By.xpath("//div[@id='menu']//a[span='" + tabName + "']");
         try {
@@ -145,6 +157,7 @@ public class BasePage {
         }
     }
 
+    @Step("Check is user at Railway site or not")
     public boolean isAtRailwayPage() {
         try {
             wait.until(driver -> driver.getCurrentUrl().toLowerCase()
