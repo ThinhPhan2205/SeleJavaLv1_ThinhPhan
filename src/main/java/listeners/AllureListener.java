@@ -7,13 +7,13 @@ import org.openqa.selenium.WebDriver;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
 import java.io.ByteArrayInputStream;
-import testcases.BaseTest;
+import common.DriverManager;
 
 public class AllureListener implements ITestListener {
 
     @Override
     public void onTestFailure(ITestResult result) {
-        WebDriver driver = BaseTest.getDriver();
+        WebDriver driver = DriverManager.getDriver();
         if (driver instanceof TakesScreenshot) {
             byte[] png = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
             Allure.addAttachment("Screenshot of failure", "image/png",

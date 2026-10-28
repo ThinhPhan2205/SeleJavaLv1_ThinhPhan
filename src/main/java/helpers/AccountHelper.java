@@ -36,9 +36,9 @@ public class AccountHelper {
         BasePage basePage = new BasePage(driver);
         RegisterPage registerPage = basePage.clickOnRegisterTab();
         registerPage.register(email,
-                Constant.AccountToRegister.PASSWORD.getValue(),
-                Constant.AccountToRegister.PASSWORD.getValue(),
-                Constant.AccountToRegister.PID.getValue());
+                Constant.REGISTER_PASSWORD,
+                Constant.REGISTER_PASSWORD,
+                Constant.REGISTER_PID);
 
         // 5. Go back to Guerrilla Mail
         driver.switchTo().window(guerrillaTab);
@@ -61,6 +61,6 @@ public class AccountHelper {
         }
 
 
-        return new Account(email, Constant.AccountToRegister.PASSWORD.getValue());
+        return new Account(email, Constant.REGISTER_PASSWORD);
     }
 }

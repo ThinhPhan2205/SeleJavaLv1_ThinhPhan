@@ -1,6 +1,5 @@
 package pageObjects;
 
-import common.Constant;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
@@ -21,8 +20,8 @@ public class MyticketPage extends BasePage {
     }
 
     // Check cells value
-    private String cellCondition(Constant.TableHeader header, String value) {
-        return "td[count(ancestor::table[1]//th[normalize-space()='" + header.getValue()
+    private String cellCondition(String header, String value) {
+        return "td[count(ancestor::table[1]//th[normalize-space()='" + header
                 + "']/preceding-sibling::th)+1][normalize-space()='" + value + "']";
     }
 
@@ -31,11 +30,11 @@ public class MyticketPage extends BasePage {
 
         By cancelLocator = By.xpath(
                 "//table//tr["
-                        + cellCondition(Constant.TableHeader.DEPART_STATION, depart) + " and "
-                        + cellCondition(Constant.TableHeader.ARRIVE_STATION, arrive) + " and "
-                        + cellCondition(Constant.TableHeader.SEAT_TYPE, seat) + " and "
-                        + cellCondition(Constant.TableHeader.DEPART_DATE, date) + " and "
-                        + cellCondition(Constant.TableHeader.TICKET_AMOUNT, amount)
+                        + cellCondition("Depart Station", depart) + " and "
+                        + cellCondition("Arrive Station", arrive) + " and "
+                        + cellCondition("Seat Type", seat) + " and "
+                        + cellCondition("Depart Date", date) + " and "
+                        + cellCondition("Amount", amount)
                         + "]//input[@value='Cancel']");
 
         findElement(cancelLocator).getAttribute("onclick").replaceAll("\\D+", "");
@@ -49,4 +48,9 @@ public class MyticketPage extends BasePage {
         return driver.findElements(cancelButton(ticketId)).isEmpty();
     }
 
+    public void cancelFirstTicket(){
+        By cancelButton = By.xpath("//table//tr[2]//input[@value='Cancel']");
+        clickButtonWithJS(cancelButton);
+        driver.switchTo().alert().accept();
+    }
 }

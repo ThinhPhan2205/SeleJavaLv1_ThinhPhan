@@ -1,6 +1,5 @@
 package pageObjects;
 
-import common.Constant;
 import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
@@ -48,10 +47,11 @@ public class BookingSuccessPage extends BasePage {
     @Step("Get ticket")
     public String getTicketSummary() {
         return String.join(" | ",
-                getTicketInfo(Constant.TableHeader.DEPART_STATION.getValue()),
-                getTicketInfo(Constant.TableHeader.ARRIVE_STATION.getValue()),
-                getTicketInfo(Constant.TableHeader.SEAT_TYPE.getValue()),
-                getTicketInfo(Constant.TableHeader.DEPART_DATE.getValue()),
-                getTicketInfo(Constant.TableHeader.TICKET_AMOUNT.getValue()));
+                getTicketInfo("Depart Station"),
+                getTicketInfo("Arrive Station"),
+                getTicketInfo("Seat Type"),
+                getTicketInfo("Depart Date"),
+                getTicketInfo("Amount")
+        );
     }
 }

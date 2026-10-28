@@ -1,6 +1,5 @@
 package pageObjects;
 
-import common.Constant;
 import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
 import org.openqa.selenium.*;
@@ -19,7 +18,6 @@ public class BasePage {
     protected WebDriverWait wait;
 
     // Constructor
-    protected String guerrillaTab;
     final By welcomeMessage = By.xpath("//div[@class='account']/strong");
     public BasePage(WebDriver driver) {
         this.driver = driver;
@@ -60,8 +58,8 @@ public class BasePage {
         return findElement(locator).getText().trim();
     }
 
-    protected void clickLink(By linkText) {
-        wait.until(ExpectedConditions.elementToBeClickable(linkText)).click();
+    protected void clickLink(By locator) {
+        wait.until(ExpectedConditions.elementToBeClickable(locator)).click();
     }
 
     protected void clickButtonWithJS(By locator) {
@@ -96,43 +94,43 @@ public class BasePage {
 
     @Step("Click on Login tab")
     public LoginPage clickOnLoginTab() {
-        clickOnTab(Constant.MenuTab.LOGIN.getValue());
+        clickOnTab("Login");
         return new LoginPage(driver);
     }
 
     @Step("Click on Register tab")
     public RegisterPage clickOnRegisterTab() {
-        clickOnTab(Constant.MenuTab.REGISTER.getValue());
+        clickOnTab("Register");
         return new RegisterPage(driver);
     }
 
     @Step("Click on My ticket tab")
     public MyticketPage clickOnMyticketTab() {
-        clickOnTab(Constant.MenuTab.MY_TICKET.getValue());
+        clickOnTab("My ticket");
         return new MyticketPage(driver);
     }
 
     @Step("Click on Timetable tab")
     public TimetablePage clickOnTimetableTab() {
-        clickOnTab(Constant.MenuTab.TIMETABLE.getValue());
+        clickOnTab("Timetable");
         return new TimetablePage(driver);
     }
 
     @Step("Click on Book ticket tab")
     public BookticketPage clickOnBookTicketTab() {
-        clickOnTab(Constant.MenuTab.BOOK_TICKET.getValue());
+        clickOnTab("Book ticket");
         return new BookticketPage(driver);
     }
 
     @Step("Click on Log out tab")
     public LogoutPage clickOnLogoutTab() {
-        clickOnTab(Constant.MenuTab.LOGOUT.getValue());
+        clickOnTab("Log out");
         return new LogoutPage(driver);
     }
 
     @Step("Click on FAQ tab")
     public FAQPage clickOnFAQTab() {
-        clickOnTab(Constant.MenuTab.FAQ.getValue());
+        clickOnTab("FAQ");
         return new FAQPage(driver);
     }
 
@@ -169,6 +167,12 @@ public class BasePage {
     }
 
     public void switchToMailboxPage() {
-        driver.switchTo().window(guerrillaTab);
+        for (String handle : driver.getWindowHandles()) {
+            driver.switchTo().window(handle);
+            if (driver.getCurrentUrl().contains("guerrillamail")) {
+                return;
+            }
+        }
+        throw new NoSuchWindowException("Guerrilla Mail site not found");
     }
 }

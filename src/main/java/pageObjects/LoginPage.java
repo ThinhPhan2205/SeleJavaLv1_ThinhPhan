@@ -27,7 +27,6 @@ public class LoginPage extends BasePage {
         typeInTextBox(usernameInput, username);
         typeInTextBox(passwordInput, password);
         clickButtonWithJS(loginButton);
-        new BasePage(driver);
     }
 
     @Step("Repeat logging in several times with username: {username} and password: {password} ")
