@@ -1,6 +1,11 @@
 package testcases;
 
+import common.CleanTicket;
 import common.Constant;
+import common.DriverManager;
+import enums.SeatType;
+import enums.Station;
+import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
@@ -13,18 +18,20 @@ import java.util.Map;
 public class BookTicketTest extends BaseTest {
 
     @Test(description = "TC12: User can book 1 ticket at a time")
+    @CleanTicket
     public void tc12_userCanBookOneTicketAtATime() {
 
         // Constructor
+        WebDriver driver = DriverManager.getDriver();
         BasePage basePage = new BasePage(driver);
         BookingSuccessPage successPage = new BookingSuccessPage(driver);
         BookticketPage  bookTicketPage = new BookticketPage(driver);
         LoginPage loginPage = new LoginPage(driver);
 
         // Test Data
-        final String departStation = Constant.Station.NHATRANG.getValue();
-        final String arriveStation = Constant.Station.HUE.getValue();
-        final String seatType = Constant.SeatType.SOFT_BED_AIR.getValue();
+        final String departStation = Station.NHATRANG.getValue();
+        final String arriveStation = Station.HUE.getValue();
+        final String seatType = SeatType.SOFT_BED_AIR.getValue();
         final String ticketAmount = "1";
         String departDate = LocalDate.now().plusDays(12)
                 .format(DateTimeFormatter.ofPattern("M/d/yyyy"));
@@ -32,8 +39,8 @@ public class BookTicketTest extends BaseTest {
         basePage.clickOnLoginTab();
 
         loginPage.login(
-                Constant.AccountToLogin.USERNAME.getValue(),
-                Constant.AccountToLogin.PASSWORD.getValue()
+                Constant.LOGIN_USERNAME,
+                Constant.LOGIN_PASSWORD
         );
 
         basePage.clickOnBookTicketTab();
@@ -50,18 +57,20 @@ public class BookTicketTest extends BaseTest {
     }
 
     @Test(description = "TC13: User can book many tickets at a time")
+    @CleanTicket
     public void tc13_userCanBookManyTicketsAtATime() {
 
         // Constructor
+        WebDriver driver = DriverManager.getDriver();
         BasePage basePage = new BasePage(driver);
         BookingSuccessPage successPage = new BookingSuccessPage(driver);
         BookticketPage  bookTicketPage = new BookticketPage(driver);
         LoginPage loginPage = new LoginPage(driver);
 
         // Test Data
-        final String departStation = Constant.Station.NHATRANG.getValue();
-        final String arriveStation = Constant.Station.SAIGON.getValue();
-        final String seatType = Constant.SeatType.SOFT_SEAT_AIR.getValue();
+        final String departStation = Station.NHATRANG.getValue();
+        final String arriveStation = Station.SAIGON.getValue();
+        final String seatType = SeatType.SOFT_SEAT_AIR.getValue();
         final String ticketAmount = "3";
         String departDate = LocalDate.now().plusDays(25)
                 .format(DateTimeFormatter.ofPattern("M/d/yyyy"));
@@ -69,8 +78,8 @@ public class BookTicketTest extends BaseTest {
         basePage.clickOnLoginTab();
 
         loginPage.login(
-                Constant.AccountToLogin.USERNAME.getValue(),
-                Constant.AccountToLogin.PASSWORD.getValue()
+                Constant.LOGIN_USERNAME,
+                Constant.LOGIN_PASSWORD
         );
 
         basePage.clickOnBookTicketTab();
@@ -90,14 +99,15 @@ public class BookTicketTest extends BaseTest {
     public void tc14_checkPriceOfTicketFromTimetable() {
 
         // Constructor
+        WebDriver driver = DriverManager.getDriver();
         BasePage basePage = new BasePage(driver);
         LoginPage loginPage = new LoginPage(driver);
         TicketpricePage ticketpricePage = new TicketpricePage(driver);
         BookticketPage bookTicketPage = new BookticketPage(driver);
 
         // Test Data
-        final String departStation = Constant.Station.DANANG.getValue();
-        final String arriveStation = Constant.Station.SAIGON.getValue();
+        final String departStation = Station.DANANG.getValue();
+        final String arriveStation = Station.SAIGON.getValue();
         final String priceTableTitle = "Ticket price from " + departStation + " to " + arriveStation;
         Map<String, String> expectedTicketPrice = new HashMap<>();
         expectedTicketPrice.put("HS","310000");
@@ -110,8 +120,8 @@ public class BookTicketTest extends BaseTest {
         basePage.clickOnLoginTab();
 
         loginPage.login(
-                Constant.AccountToLogin.USERNAME.getValue(),
-                Constant.AccountToLogin.PASSWORD.getValue()
+                Constant.LOGIN_USERNAME,
+                Constant.LOGIN_PASSWORD
         );
 
         TimetablePage timetablePage = basePage.clickOnTimetableTab();
@@ -132,9 +142,11 @@ public class BookTicketTest extends BaseTest {
     }
 
     @Test(description = "TC15: User can book ticket from Timetable")
+    @CleanTicket
     public void tc15_bookTicketSuccessfully() {
 
         // Constructor
+        WebDriver driver = DriverManager.getDriver();
         BasePage basePage = new BasePage(driver);
         LoginPage loginPage = new LoginPage(driver);
         BookingSuccessPage successPage = new BookingSuccessPage(driver);
@@ -143,9 +155,9 @@ public class BookTicketTest extends BaseTest {
         TimetablePage  timetablePage = basePage.clickOnTimetableTab();
 
         // Test Data
-        final String departStation = Constant.Station.QUANGNGAI.getValue();
-        final String arriveStation = Constant.Station.HUE.getValue();
-        final String seatType = Constant.SeatType.SOFT_SEAT.getValue();
+        final String departStation = Station.QUANGNGAI.getValue();
+        final String arriveStation = Station.HUE.getValue();
+        final String seatType = SeatType.SOFT_SEAT.getValue();
         final String ticketAmount = "2";
         String departDate = LocalDate.now().plusDays(10)
                 .format(DateTimeFormatter.ofPattern("M/d/yyyy"));
@@ -153,8 +165,8 @@ public class BookTicketTest extends BaseTest {
         basePage.clickOnLoginTab();
 
         loginPage.login(
-                Constant.AccountToLogin.USERNAME.getValue(),
-                Constant.AccountToLogin.PASSWORD.getValue()
+                Constant.LOGIN_USERNAME,
+                Constant.LOGIN_PASSWORD
         );
 
         basePage.clickOnTimetableTab();

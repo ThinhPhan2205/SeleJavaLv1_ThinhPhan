@@ -1,9 +1,9 @@
 package testcases;
 
+import common.DriverManager;
 import dataObjects.Account;
 import common.Constant;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -12,24 +12,24 @@ import helpers.AccountHelper;
 
 public class ResetPasswordTest extends BaseTest {
 
-    private WebDriver driver;
     private ResetPasswordPage resetPasswordPage;
     private GuerrillaMailPage guerrillaMailPage;
     private BasePage basePage;
     private AccountHelper accountHelper;
 
     @BeforeMethod
-    public void setUp() {
-        driver = new ChromeDriver();
-        resetPasswordPage = new ResetPasswordPage(driver);
-        guerrillaMailPage = new GuerrillaMailPage(driver);
-        accountHelper = new AccountHelper(driver);
-        basePage = new BasePage(driver);
+    public void initPages() {
+        resetPasswordPage = new ResetPasswordPage(DriverManager.getDriver());
+        guerrillaMailPage = new GuerrillaMailPage(DriverManager.getDriver());
+        accountHelper = new AccountHelper(DriverManager.getDriver());
+        basePage = new BasePage(DriverManager.getDriver());
 
     }
 
     @Test(description = "TC10: Reset password shows error if the new password is same as current")
     public void tc10_resetPasswordWithCurrentPasswordTest() {
+
+        WebDriver driver = DriverManager.getDriver();
 
         // Pre-condition: an active account is existing
         Account account = accountHelper.createAndActivateAccount();
@@ -56,18 +56,18 @@ public class ResetPasswordTest extends BaseTest {
                 resetToken,
                 "Reset tokens in instruction mail and reset password form do not match");
 
-
-
         resetPasswordPage.resetPassword(account.getPassword(), account.getPassword());
 
         // Expectation: Message "The new password cannot be the same with the current password" is shown
         String ACTUAL_MESSAGE = resetPasswordPage.getResetMessage();
-        Assert.assertEquals(ACTUAL_MESSAGE, Constant.ERROR_RESET_PASSWORD_MESSAGE,
+        Assert.assertEquals(ACTUAL_MESSAGE, Constant.SAME_RESET_PASSWORD_MESSAGE,
                 "Reset password error message is wrong");
     }
 
     @Test(description = "TC11: Reset password shows error if the new password and confirm password doesn't match")
     public void tc11_resetPasswordWithUnmatchedConfirmPasswordTest() {
+
+        WebDriver driver = DriverManager.getDriver();
 
         // Test Data
         final String newPassword = "123456789";
@@ -88,11 +88,10 @@ public class ResetPasswordTest extends BaseTest {
 
         // 8. Click on reset link
         String resetToken = guerrillaMailPage.getResetToken();
-        String resetPassword = guerrillaMailPage.getLinkInMailBox();
-        guerrillaMailPage.clickLinkInMail();
-
-        // Switch driver
-        driver.switchTo().window(resetPassword);
+        String resetPasswordLink = guerrillaMailPage.getLinkInMailBox();
+        driver.get(resetPasswordLink);
+        String resetPasswordWindow = driver.getWindowHandle();
+        driver.switchTo().window(resetPasswordWindow);
 
         Assert.assertEquals(resetPasswordPage.getResetToken(),
                 resetToken,

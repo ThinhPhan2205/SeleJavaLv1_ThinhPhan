@@ -1,6 +1,8 @@
 package testcases;
 
 import common.Constant;
+import common.DriverManager;
+import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import pageObjects.*;
@@ -11,6 +13,7 @@ public class LogoutTest extends BaseTest {
     public void tc06_LogoutAndRedirectToHomePage() {
 
         // Constructor
+        WebDriver driver = DriverManager.getDriver();
         BasePage basePage = new BasePage(driver);
         HomePage homePage = new HomePage(driver);
         LoginPage  loginPage = new LoginPage(driver);
@@ -21,8 +24,8 @@ public class LogoutTest extends BaseTest {
         basePage.clickOnLoginTab();
 
         loginPage.login(
-                Constant.AccountToLogin.USERNAME.getValue(),
-                Constant.AccountToLogin.PASSWORD.getValue()
+                Constant.LOGIN_USERNAME,
+                Constant.LOGIN_PASSWORD
         );
 
         FAQPage faqPage = basePage.clickOnFAQTab();
@@ -33,7 +36,7 @@ public class LogoutTest extends BaseTest {
         Assert.assertTrue(homePage.isAtHomePage(), "Not at Home page");
 
         // 6. Check if "Log out" tab is disappeared
-        Assert.assertTrue(basePage.isTabDisappeared(Constant.MenuTab.LOGOUT.getValue()),
+        Assert.assertTrue(basePage.isTabDisappeared("Log out"),
                 "Tab 'Log out' should disappear but it is still displayed");
 
     }

@@ -1,9 +1,7 @@
 package testcases;
 
 import common.Constant;
-import helpers.AccountHelper;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
+import common.DriverManager;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -16,8 +14,8 @@ public class LoginTest extends BaseTest {
 
     @BeforeMethod
     public void initPages() {
-        basePage = new BasePage(driver);
-        loginPage = new LoginPage(driver);
+        basePage = new BasePage(DriverManager.getDriver());
+        loginPage = new LoginPage(DriverManager.getDriver());
     }
 
     @Test(description = "TC1: User can log into Railway with valid username and password")
@@ -26,8 +24,8 @@ public class LoginTest extends BaseTest {
         basePage.clickOnLoginTab();
 
         loginPage.login(
-                Constant.AccountToLogin.USERNAME.getValue(),
-                Constant.AccountToLogin.PASSWORD.getValue()
+                Constant.LOGIN_USERNAME,
+                Constant.LOGIN_PASSWORD
         );
 
         Assert.assertEquals(basePage.getWelcomeMessage(),
@@ -41,8 +39,8 @@ public class LoginTest extends BaseTest {
         basePage.clickOnLoginTab();
 
         loginPage.login(
-                Constant.InvalidInputs.BLANK_INPUT.getValue(),
-                Constant.AccountToLogin.PASSWORD.getValue()
+                Constant.BLANK_INPUT,
+                Constant.LOGIN_PASSWORD
         );
 
         Assert.assertEquals(loginPage.getLoginMessage(),
@@ -56,8 +54,8 @@ public class LoginTest extends BaseTest {
         basePage.clickOnLoginTab();
 
         loginPage.login(
-                Constant.AccountToLogin.USERNAME.getValue(),
-                Constant.InvalidInputs.INVALID_PASSWORD.getValue()
+                Constant.LOGIN_USERNAME,
+                Constant.INVALID_PASSWORD
         );
 
         Assert.assertEquals(loginPage.getLoginMessage(),
@@ -74,8 +72,8 @@ public class LoginTest extends BaseTest {
         basePage.clickOnLoginTab();
 
         loginPage.login(
-                Constant.AccountToLogin.USERNAME.getValue(),
-                Constant.InvalidInputs.WRONG_PASSWORD.getValue()
+                Constant.LOGIN_USERNAME,
+                Constant.WRONG_PASSWORD
         );
 
         Assert.assertEquals(loginPage.getLoginMessage(),
@@ -84,8 +82,8 @@ public class LoginTest extends BaseTest {
 
         // 5. Repeat step 3 and 4 three more times
         loginPage.repeatLoginAction(loginAttempt,
-                Constant.AccountToLogin.USERNAME.getValue(),
-                Constant.InvalidInputs.WRONG_PASSWORD.getValue()
+                Constant.LOGIN_USERNAME,
+                Constant.WRONG_PASSWORD
         );
 
         Assert.assertEquals(loginPage.getLoginMessage(),
@@ -99,8 +97,8 @@ public class LoginTest extends BaseTest {
         basePage.clickOnLoginTab();
 
         loginPage.login(
-                Constant.InvalidInputs.INACTIVATED_EMAIL.getValue(),
-                Constant.AccountToLogin.PASSWORD.getValue()
+                Constant.INACTIVATED_EMAIL,
+                Constant.LOGIN_PASSWORD
         );
 
         Assert.assertEquals(loginPage.getLoginMessage(),

@@ -1,7 +1,11 @@
 package pageObjects;
 
+import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.time.Duration;
 
 public class MyticketPage extends BasePage {
 
@@ -48,9 +52,15 @@ public class MyticketPage extends BasePage {
         return driver.findElements(cancelButton(ticketId)).isEmpty();
     }
 
+    @Step("Cancel first ticket in My ticket table")
     public void cancelFirstTicket(){
         By cancelButton = By.xpath("//table//tr[2]//input[@value='Cancel']");
+        By tableRows = By.xpath("//table//tr");
+        int rowsBefore = driver.findElements(tableRows).size();
+
         clickButtonWithJS(cancelButton);
         driver.switchTo().alert().accept();
+        new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(d -> d.findElements(tableRows).size() < rowsBefore);
     }
 }

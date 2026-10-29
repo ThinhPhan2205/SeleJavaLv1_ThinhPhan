@@ -1,11 +1,14 @@
 package testcases;
 
 import common.Constant;
+import common.DriverManager;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WindowType;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import pageObjects.BasePage;
 import pageObjects.GuerrillaMailPage;
+import pageObjects.HomePage;
 import pageObjects.RegisterPage;
 
 public class CreateAccountTest extends BaseTest {
@@ -13,14 +16,14 @@ public class CreateAccountTest extends BaseTest {
     @Test(description = "TC07: User can't create account with an already in-use email")
     public void tc07_registerAccountWithInuseEmail() {
 
-        BasePage basePage = new BasePage(driver);
+        BasePage basePage = new BasePage(DriverManager.getDriver());
         RegisterPage registerPage = basePage.clickOnRegisterTab();
 
         registerPage.register(
-                Constant.AccountToLogin.USERNAME.getValue(),
-                Constant.AccountToRegister.PASSWORD.getValue(),
-                Constant.AccountToRegister.PASSWORD.getValue(),
-                Constant.AccountToRegister.PID.getValue()
+                Constant.LOGIN_USERNAME,
+                Constant.REGISTER_PASSWORD,
+                Constant.REGISTER_PASSWORD,
+                Constant.REGISTER_PID
         );
 
         Assert.assertEquals(registerPage.getErrorRegisterMessage(),
@@ -31,15 +34,36 @@ public class CreateAccountTest extends BaseTest {
     @Test(description = "TC08: User can't create account while password and PID fields are empty")
     public void tc08_registerWithBlankPasswordAndPID() {
 
+        WebDriver driver = DriverManager.getDriver();
         BasePage basePage = new BasePage(driver);
         RegisterPage registerPage = basePage.clickOnRegisterTab();
+        GuerrillaMailPage mailPage = new GuerrillaMailPage(driver);
+
+        // Navigate to Guerrilla Mail
+        mailPage.goToGuerrillaSite();
+
+        String email = mailPage.getEmail();
+
+        driver.switchTo().newWindow(WindowType.TAB);
+        driver.get(Constant.RAILWAY_URL);
+        String railwayTab = driver.getWindowHandle();
+
+        basePage.clickOnRegisterTab();
 
         registerPage.register(
-                Constant.AccountToLogin.USERNAME.getValue(),
-                Constant.InvalidInputs.BLANK_INPUT.getValue(),
-                Constant.InvalidInputs.BLANK_INPUT.getValue(),
-                Constant.InvalidInputs.BLANK_INPUT.getValue()
+                email,
+                Constant.BLANK_INPUT,
+                Constant.BLANK_INPUT,
+                Constant.BLANK_INPUT
         );
+
+        Assert.assertEquals(registerPage.getInvalidPasswordWarning(),
+                Constant.INVALID_PASSWORD_WARNING,
+                "Invalid password length message is wrong");
+
+        Assert.assertEquals(registerPage.getInvalidPidWarning(),
+                Constant.INVALID_PID_WARNING,
+                "Invalid ID length message is wrong");
 
         Assert.assertEquals(registerPage.getErrorRegisterMessage(),
                 Constant.INVALID_REGISTER_VALUE_MESSAGE,
@@ -50,12 +74,14 @@ public class CreateAccountTest extends BaseTest {
     public void tc09_registerAccountAndCheckConfirmationEmail() {
 
         // Constructor
+        WebDriver driver = DriverManager.getDriver();
         BasePage basePage = new BasePage(driver);
         GuerrillaMailPage mailPage = new GuerrillaMailPage(driver);
         RegisterPage registerPage = new RegisterPage(driver);
+        HomePage homePage = new HomePage(driver);
 
         // Navigate to Guerrilla Mail
-        String guerrillaTab = mailPage.goToGuerrillaSite();
+        mailPage.goToGuerrillaSite();
 
         // Get a free email
         String email = mailPage.getEmail();
@@ -64,14 +90,22 @@ public class CreateAccountTest extends BaseTest {
         driver.get(Constant.RAILWAY_URL);
         String railwayTab = driver.getWindowHandle();
 
-        basePage.clickOnRegisterTab();
+        // Check message on Home page before logging in
+        Assert.assertTrue(
+                homePage.isRegisterLinkPresent(),
+                "Create an account link does not display"
+        );
 
-        registerPage.register(email,
-                Constant.AccountToRegister.PASSWORD.getValue(),
-                Constant.AccountToRegister.PASSWORD.getValue(),
-                Constant.AccountToRegister.PID.getValue());
+        // Click "Create an account link" on Home page
+        homePage.clickRegisterLink();
 
-        driver.switchTo().window(guerrillaTab);
+        registerPage.register(
+                email,
+                Constant.REGISTER_PASSWORD,
+                Constant.REGISTER_PASSWORD,
+                Constant.REGISTER_PID);
+
+        basePage.switchToMailboxPage();
         basePage.refreshPage();
 
         mailPage.openEmail(Constant.CONFIRM_EMAIL_KEYWORD);

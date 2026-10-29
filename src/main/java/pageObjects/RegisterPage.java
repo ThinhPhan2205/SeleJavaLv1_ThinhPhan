@@ -15,6 +15,8 @@ public class RegisterPage extends BasePage {
     private final By registerButton       = By.xpath("//*[@id='RegisterForm']/fieldset/p/input");
     public static final By errorRegisterMessage  = By.xpath("//*[@id='content']/p[2]");
     public static final By registerConfirmMessage = By.xpath("//*[@id='content']/p");
+    public static final By invalidPasswordWarning = By.xpath("//label[@for='password' and @class='validation-error']");
+    public static final By invalidPidWarning = By.xpath("//label[@for='pid' and @class='validation-error']");
 
     // Constructor
     public RegisterPage(WebDriver driver) {
@@ -59,4 +61,23 @@ public class RegisterPage extends BasePage {
         );
         return message;
     }
+
+    @Step("Get invalid password warning")
+    public String getInvalidPasswordWarning() {
+        String message = getTextOfElement(invalidPasswordWarning);
+        Allure.getLifecycle().updateStep(
+                step -> step.setName("Get invalid password warning: " + message)
+        );
+        return message;
+    }
+
+    @Step("Get invalid pid warning")
+    public String getInvalidPidWarning() {
+        String message = getTextOfElement(invalidPidWarning);
+        Allure.getLifecycle().updateStep(
+                step -> step.setName("Get invalid pid warning: " + message)
+        );
+        return message;
+    }
+
 }

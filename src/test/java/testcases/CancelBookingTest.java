@@ -1,6 +1,9 @@
 package testcases;
 
 import common.Constant;
+import common.DriverManager;
+import enums.SeatType;
+import enums.Station;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import pageObjects.*;
@@ -15,25 +18,25 @@ public class CancelBookingTest extends BaseTest {
     public void tc16_cancelTicket() {
 
         // Constructor
-        BasePage basePage = new BasePage(driver);
-        LoginPage  loginPage = new LoginPage(driver);
-        BookticketPage  bookTicketPage = new BookticketPage(driver);
-        MyticketPage   myTicketPage = new MyticketPage(driver);
-        BookingSuccessPage bookSuccessPage = new BookingSuccessPage(driver);
+        BasePage basePage = new BasePage(DriverManager.getDriver());
+        LoginPage  loginPage = new LoginPage(DriverManager.getDriver());
+        BookticketPage  bookTicketPage = new BookticketPage(DriverManager.getDriver());
+        MyticketPage   myTicketPage = new MyticketPage(DriverManager.getDriver());
+        BookingSuccessPage bookSuccessPage = new BookingSuccessPage(DriverManager.getDriver());
 
         // Test Data
         String departDate = LocalDate.now().plusDays(7)
                 .format(DateTimeFormatter.ofPattern("M/d/yyyy"));
-        String departStation = Constant.Station.DANANG.getValue();
-        String arriveStation = Constant.Station.HUE.getValue();
-        String seatType = Constant.SeatType.SOFT_SEAT.getValue();
+        String departStation = Station.DANANG.getValue();
+        String arriveStation = Station.HUE.getValue();
+        String seatType = SeatType.SOFT_SEAT.getValue();
         String ticketAmount = "1";
 
         basePage.clickOnLoginTab();
 
         loginPage.login(
-                Constant.AccountToLogin.USERNAME.getValue(),
-                Constant.AccountToLogin.PASSWORD.getValue()
+                Constant.LOGIN_USERNAME,
+                Constant.LOGIN_PASSWORD
         );
 
         basePage.clickOnBookTicketTab();

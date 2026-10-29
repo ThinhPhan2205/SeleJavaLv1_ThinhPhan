@@ -18,19 +18,18 @@ public class TicketpricePage extends BasePage {
 
     // Function
 
-    // Get Book ticket link by seat typeInTextBox
+    // Get Book ticket link by seat type
     private By bookTicketLink(String seatType) {
         return By.xpath("//td[@class='NoBorder'][normalize-space()='" + seatType + "']"
                 + "/following-sibling::td/a");
     }
 
     // Click Book ticket link
-    public BookticketPage clickBookTicket(String seatType) {
+    public void clickBookTicket(String seatType) {
         clickButtonWithJS(bookTicketLink(seatType));
-        return new BookticketPage(driver);
     }
 
-    // Get ticket price of each seat typeInTextBox
+    // Get ticket price of each seat type
     public String getSeatTypePrice (String seatType) {
         return getTextOfElement(seattypeRow(getColumnIndexBySeatType(seatType)));
     }
